@@ -39,13 +39,17 @@ function App() {
     setMatchId(id);
   }, [matchUrl]);
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setMatchUrl(e.target.value);
+  };
+
   const scoreBoardRef = useRef<HTMLDivElement>(null);
 
   return (
     <>
     <InputForm>
     <StyledSpan>{'Enter Overstat URL: '}</StyledSpan>
-      <StyledInput placeholder='https://overstat.gg/api/stats/9887/summary' onBlur={(e) => setMatchUrl(e.target.value)} />
+      <StyledInput placeholder='https://overstat.gg/api/stats/9887/summary' onBlur={(e) => setMatchUrl(e.target.value)} onChange={handleInputChange} />
     </InputForm>
       
       {
