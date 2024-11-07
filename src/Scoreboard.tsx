@@ -1,8 +1,8 @@
 import { styled } from '@linaria/react';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import background from './assets/background.png'
-import logos from './assets/logos.png'
+import background from './assets/background.png';
+import logos from './assets/logos.png';
 import domToImage from 'dom-to-image';
 
 const BackgroundImage = styled.div`
@@ -12,49 +12,50 @@ const BackgroundImage = styled.div`
   background: url(${background}), #1E1E1E;
   background-blend-mode: overlay;
   filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
-`
+`;
 
 type TitleProps = {
-  position?: "left" | "right" | "center",
-  filled?: boolean,
-  accentColor?: boolean,
-  subTitle?: boolean
-}
+  position?: 'left' | 'right' | 'center';
+  filled?: boolean;
+  accentColor?: boolean;
+  subTitle?: boolean;
+};
 
 const Title = styled.span<TitleProps>`
-
-        //prop based positioning
-        position: absolute;
-        top: 1em;
-        left: ${({ position }) => (position === 'left' ? '2em' : (position === 'center' ? '50%' : 'auto'))};
-        right: ${({ position }) => (position === 'right' ? '2em' : 'auto')};
-        transform: ${({ position }) => (position === 'center' ? 'translateX(-50%)' : 'none')};
-        width: ${({ position }) => (position === 'center' ? 'auto' : 'fit-content')};
-        text-align: ${({ position }) => {
+  //prop based positioning
+  position: absolute;
+  top: 1em;
+  left: ${({ position }) =>
+    position === 'left' ? '2em' : position === 'center' ? '50%' : 'auto'};
+  right: ${({ position }) => (position === 'right' ? '2em' : 'auto')};
+  transform: ${({ position }) =>
+    position === 'center' ? 'translateX(-50%)' : 'none'};
+  width: ${({ position }) => (position === 'center' ? 'auto' : 'fit-content')};
+  text-align: ${({ position }) => {
     if (position === 'left') return 'left';
     if (position === 'right') return 'right';
     return 'center';
   }};
 
-        margin-top: ${({ subTitle }) => (subTitle ? '1.2em' : '0')};
+  margin-top: ${({ subTitle }) => (subTitle ? '1.2em' : '0')};
 
-        //styling
+  //styling
 
-        background-color: ${({ filled }) => (filled ? '#B0FF34' : 'transparent')};
-        color: ${({ filled, accentColor }) => (filled ? '#1A1C1F' : (accentColor ? '#B0FF34' : 'white'))};
-        font-family: "Unbounded", sans-serif;
-        font-weight: 900;
-        font-size: 48px;
-`
+  background-color: ${({ filled }) => (filled ? '#B0FF34' : 'transparent')};
+  color: ${({ filled, accentColor }) =>
+    filled ? '#1A1C1F' : accentColor ? '#B0FF34' : 'white'};
+  font-family: 'Unbounded', sans-serif;
+  font-weight: 900;
+  font-size: 48px;
+`;
 
-
-const TeamsContainer = styled.div<{ position: "left" | "right" }>`
-    width: 61em;
-    position: absolute;
-    top: 16em;
-    left: ${({ position }) => (position === 'left' ? '5%' : 'auto')};
-    right: ${({ position }) => (position === 'right' ? '5%' : 'auto')};
-`
+const TeamsContainer = styled.div<{ position: 'left' | 'right' }>`
+  width: 61em;
+  position: absolute;
+  top: 16em;
+  left: ${({ position }) => (position === 'left' ? '5%' : 'auto')};
+  right: ${({ position }) => (position === 'right' ? '5%' : 'auto')};
+`;
 
 const TeamWrapper = styled.div`
   width: 100%;
@@ -63,36 +64,36 @@ const TeamWrapper = styled.div`
   flex-direction: row;
   align-items: flex-start;
   margin-bottom: 0.8em;
-`
+`;
 
 const Team = styled.div`
   width: 100%;
   height: 100%;
-  background-color: #2A2C2D;
+  background-color: #2a2c2d;
   display: flex;
   flex-direction: row;
   align-items: center;
-  font-family: "Unbounded", sans-serif;
+  font-family: 'Unbounded', sans-serif;
   font-size: 18px;
-  color: #FCFCFC;
+  color: #fcfcfc;
   padding-left: 1em;
-`
+`;
 
 const Place = styled.div`
   width: 3.5em;
   height: 100%;
-  background-color: #2A2C2D;
-  color: #FCFCFC;
+  background-color: #2a2c2d;
+  color: #fcfcfc;
   display: flex;
   justify-content: center;
-  font-family: "Unbounded", sans-serif;
+  font-family: 'Unbounded', sans-serif;
   font-size: 18px;
   align-items: center;
   margin-right: 0.2em;
-`
+`;
 
 const Logo = styled.div`
-    position: absolute;
+  position: absolute;
   width: 100%;
   height: 4em;
   background-image: url(${logos});
@@ -103,21 +104,29 @@ const Logo = styled.div`
   bottom: 2em;
   left: 50%;
   transform: translateX(-50%);
-`
+`;
 
 const ExportButton = styled.button`
-width:1920px;
-background-color: #B0FF34;
-color: #1A1C1F;
-font-family: "Unbounded", sans-serif;
-font-weight: 900;
-font-size: 2em;
-border: none;
-padding: 0.5em 1em;
-cursor: pointer;
-`
+  width: 1920px;
+  background-color: #b0ff34;
+  color: #1a1c1f;
+  font-family: 'Unbounded', sans-serif;
+  font-weight: 900;
+  font-size: 2em;
+  border: none;
+  padding: 0.5em 1em;
+  cursor: pointer;
+`;
 
-const downloadImage = async (ref: React.RefObject<HTMLDivElement>, filename: string) => {
+interface TeamData {
+  name: string;
+  overall_stats: { position: string };
+}
+
+const downloadImage = async (
+  ref: React.RefObject<HTMLDivElement>,
+  filename: string
+) => {
   if (ref.current === null) return;
 
   try {
@@ -135,7 +144,13 @@ const downloadImage = async (ref: React.RefObject<HTMLDivElement>, filename: str
   }
 };
 
-const EditableTitle = ({ text, ...props }: { text: string, [key: string]: any }) => {
+const EditableTitle = ({
+  text,
+  ...props
+}: {
+  text: string;
+  [key: string]: any;
+}) => {
   const [isEditing, setIsEditing] = useState(false);
   const [titleText, setTitleText] = useState(text);
 
@@ -155,7 +170,7 @@ const EditableTitle = ({ text, ...props }: { text: string, [key: string]: any })
     <Title {...props} onDoubleClick={handleDoubleClick}>
       {isEditing ? (
         <input
-          placeholder='...'
+          placeholder="..."
           value={titleText}
           onChange={handleInputChange}
           onBlur={handleBlur}
@@ -176,7 +191,13 @@ const EditableTitle = ({ text, ...props }: { text: string, [key: string]: any })
   );
 };
 
-const EditableTeam = ({ text, ...props }: { text: string, [key: string]: any }) => {
+const EditableTeam = ({
+  text,
+  ...props
+}: {
+  text: string;
+  [key: string]: any;
+}) => {
   const [isEditing, setIsEditing] = useState(false);
   const [teamText, setTeamText] = useState(text);
 
@@ -196,7 +217,7 @@ const EditableTeam = ({ text, ...props }: { text: string, [key: string]: any }) 
     <Team {...props} onDoubleClick={handleDoubleClick}>
       {isEditing ? (
         <input
-          placeholder='...'
+          placeholder="..."
           value={teamText}
           onChange={handleInputChange}
           onBlur={handleBlur}
@@ -217,7 +238,13 @@ const EditableTeam = ({ text, ...props }: { text: string, [key: string]: any }) 
   );
 };
 
-const EditablePlace = ({ text, ...props }: { text: string, [key: string]: any }) => {
+const EditablePlace = ({
+  text,
+  ...props
+}: {
+  text: string;
+  [key: string]: any;
+}) => {
   const [isEditing, setIsEditing] = useState(false);
   const [placeText, setPlaceText] = useState(text);
 
@@ -237,7 +264,7 @@ const EditablePlace = ({ text, ...props }: { text: string, [key: string]: any })
     <Place {...props} onDoubleClick={handleDoubleClick}>
       {isEditing ? (
         <input
-          placeholder='...'
+          placeholder="..."
           value={placeText}
           onChange={handleInputChange}
           onBlur={handleBlur}
@@ -259,31 +286,36 @@ const EditablePlace = ({ text, ...props }: { text: string, [key: string]: any })
 };
 
 const Scoreboard = ({ matchId }: { matchId: string }) => {
-  const scoreBoardRef = React.useRef<HTMLDivElement>(null);
+  const scoreBoardRef = useRef<HTMLDivElement>(null);
 
   const { isLoading, error, data } = useQuery(
     {
       queryKey: ['matchSummary', matchId],
-      queryFn: () => fetch(`https://overstat.gg/api/stats/${matchId}/overall`).then((res) =>
-        res.json()
-      ),
-    }
+      queryFn: () =>
+        fetch(`https://overstat.gg/api/stats/${matchId}/overall`).then(
+          (res) => res.json()
+        ),
+    },
   );
 
-  if (isLoading) return <div>Loading...</div>;
+  useEffect(() => {
+    if (error) {
+      console.error('Error fetching data:', error);
+    }
+  }, [error]);
 
-  const leftTeams =  data.teams.slice(0, 10);
-  const rightTeams = data.teams.slice(10);
+  const teams = data?.teams || [];
 
-  const totalTeams = data.teams.length;
+  const displayedTeams: TeamData[] = teams.length < 20 ? [
+    ...teams,
+    ...Array.from({ length: 20 - teams.length }, (_, i) => ({
+      name: '',
+      overall_stats: { position: '' },
+    })),
+  ] : teams;
 
-  if (totalTeams < 20) {
-    const placeholderTeams = Array.from({ length: 20 - totalTeams }, (_, i) => ({
-      name: ``,
-      overall_stats: { position: '' }
-    }));
-    data.teams.push(...placeholderTeams);
-  }
+  const leftTeams = displayedTeams.slice(0, 10);
+  const rightTeams = displayedTeams.slice(10);
 
   return (
     <>
@@ -293,40 +325,47 @@ const Scoreboard = ({ matchId }: { matchId: string }) => {
         </style>
       </head>
       <BackgroundImage ref={scoreBoardRef}>
+        <EditableTitle text="QUALIFIER #2" position="left">
+          QUALIFIER #2
+        </EditableTitle>
 
-        <EditableTitle text="QUALIFIER #2" position="left">QUALIFIER #2</EditableTitle>
+        <EditableTitle text="REDRAGON X 13YOG" position="right">
+          REDRAGON X 13YOG
+        </EditableTitle>
 
-        <EditableTitle text="REDRAGON X 13YOG" position="right">REDRAGON X 13YOG</EditableTitle>
+        <EditableTitle text="LEAGUE" position="right" filled subTitle>
+          LEAGUE
+        </EditableTitle>
 
-        <EditableTitle text="LEAGUE" position="right" filled subTitle>LEAGUE</EditableTitle>
-
-        <TeamsContainer position='left'>
-          {isLoading ? (
-            <div>Loading teams...</div>
-          ) : (
-            leftTeams.map((team: any) => (
-              <TeamWrapper color={team.color}>
-                <EditablePlace text={team.overall_stats.position}>{team.overall_stats.position}</EditablePlace>
+        <TeamsContainer position="left">
+          {isLoading && <div>Loading teams...</div>}
+          {!isLoading &&
+            leftTeams.map((team: TeamData) => (
+              <TeamWrapper key={team.name}>
+                <EditablePlace text={team.overall_stats.position}>
+                  {team.overall_stats.position}
+                </EditablePlace>
                 <EditableTeam text={team.name}>{team.name}</EditableTeam>
               </TeamWrapper>
-            ))
-          )}
+            ))}
         </TeamsContainer>
-        <TeamsContainer position='right'>
-          {isLoading ? (
-            <div>Loading teams...</div>
-          ) : (
-            rightTeams.map((team: any) => (
-              <TeamWrapper color={team.color}>
-                <EditablePlace text={team.overall_stats.position}>{team.overall_stats.position}</EditablePlace>
+        <TeamsContainer position="right">
+          {isLoading && <div>Loading teams...</div>}
+          {!isLoading &&
+            rightTeams.map((team: TeamData) => (
+              <TeamWrapper key={team.name}>
+                <EditablePlace text={team.overall_stats.position}>
+                  {team.overall_stats.position}
+                </EditablePlace>
                 <EditableTeam text={team.name}>{team.name}</EditableTeam>
               </TeamWrapper>
-            ))
-          )}
+            ))}
         </TeamsContainer>
         <Logo />
       </BackgroundImage>
-      <ExportButton onClick={() => downloadImage(scoreBoardRef, matchId)}>Export</ExportButton>
+      <ExportButton onClick={() => downloadImage(scoreBoardRef, matchId)}>
+        Export
+      </ExportButton>
     </>
   );
 };
