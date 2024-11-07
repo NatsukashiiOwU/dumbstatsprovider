@@ -5,7 +5,6 @@ import background from './assets/background.png'
 import logos from './assets/logos.png'
 import domToImage from 'dom-to-image';
 
-
 const BackgroundImage = styled.div`
   position: relative;
   width: 1920px;
@@ -140,27 +139,26 @@ const EditableTitle = ({ text, ...props }: { text: string, [key: string]: any })
   const [isEditing, setIsEditing] = useState(false);
   const [titleText, setTitleText] = useState(text);
 
-  const handleMouseEnter = () => {
+  const handleDoubleClick = () => {
     setIsEditing(true);
-  };
-
-  const handleMouseLeave = () => {
-    setIsEditing(false);
   };
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTitleText(event.target.value);
   };
 
-  
+  const handleBlur = () => {
+    setIsEditing(false);
+  };
 
   return (
-    <Title {...props} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+    <Title {...props} onDoubleClick={handleDoubleClick}>
       {isEditing ? (
         <input
           placeholder='...'
           value={titleText}
           onChange={handleInputChange}
+          onBlur={handleBlur}
           style={{
             backgroundColor: 'transparent',
             color: 'inherit',
@@ -175,6 +173,88 @@ const EditableTitle = ({ text, ...props }: { text: string, [key: string]: any })
         titleText
       )}
     </Title>
+  );
+};
+
+const EditableTeam = ({ text, ...props }: { text: string, [key: string]: any }) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [teamText, setTeamText] = useState(text);
+
+  const handleDoubleClick = () => {
+    setIsEditing(true);
+  };
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setTeamText(event.target.value);
+  };
+
+  const handleBlur = () => {
+    setIsEditing(false);
+  };
+
+  return (
+    <Team {...props} onDoubleClick={handleDoubleClick}>
+      {isEditing ? (
+        <input
+          placeholder='...'
+          value={teamText}
+          onChange={handleInputChange}
+          onBlur={handleBlur}
+          style={{
+            backgroundColor: 'transparent',
+            color: 'inherit',
+            border: 'none',
+            outline: 'none',
+            fontFamily: 'inherit',
+            fontSize: 'inherit',
+            fontWeight: 'inherit',
+          }}
+        />
+      ) : (
+        teamText
+      )}
+    </Team>
+  );
+};
+
+const EditablePlace = ({ text, ...props }: { text: string, [key: string]: any }) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [placeText, setPlaceText] = useState(text);
+
+  const handleDoubleClick = () => {
+    setIsEditing(true);
+  };
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPlaceText(event.target.value);
+  };
+
+  const handleBlur = () => {
+    setIsEditing(false);
+  };
+
+  return (
+    <Place {...props} onDoubleClick={handleDoubleClick}>
+      {isEditing ? (
+        <input
+          placeholder='...'
+          value={placeText}
+          onChange={handleInputChange}
+          onBlur={handleBlur}
+          style={{
+            backgroundColor: 'transparent',
+            color: 'inherit',
+            border: 'none',
+            outline: 'none',
+            fontFamily: 'inherit',
+            fontSize: 'inherit',
+            fontWeight: 'inherit',
+          }}
+        />
+      ) : (
+        placeText
+      )}
+    </Place>
   );
 };
 
@@ -194,9 +274,19 @@ const Scoreboard = ({ matchId }: { matchId: string }) => {
 
     if (error) return <div>An error has occurred: {error.message}</div>;
 
-    // Split the teams into two arrays: leftTeams (max 10) and rightTeams
+    
+    const totalTeams = data.teams.length;
     const leftTeams = data.teams.slice(0, 10);
     const rightTeams = data.teams.slice(10);
+
+    if (totalTeams < 20) {
+        const placeholderTeams = Array.from({ length: 20 - totalTeams }, (_, i) => ({
+            name: ``,
+            overall_stats: { position: '' }
+        }));
+        data.teams.push(...placeholderTeams);
+    }
+
 
     return (
         <>
@@ -206,26 +296,26 @@ const Scoreboard = ({ matchId }: { matchId: string }) => {
                 </style>
             </head>
             <BackgroundImage ref={scoreBoardRef}>
-            
-                <EditableTitle position="left" accentColor text="QUALIFIER#2" />
 
-                <Title position="right">REDRAGON X 13YOG</Title>
+                <EditableTitle text="QUALIFIER #2" position="left">QUALIFIER #2</EditableTitle>
 
-                <Title position="right" filled subTitle>LEAGUE</Title>
+                <EditableTitle text="REDRAGON X 13YOG" position="right">REDRAGON X 13YOG</EditableTitle>
+
+                <EditableTitle text="LEAGUE" position="right" filled subTitle>LEAGUE</EditableTitle>
 
                 <TeamsContainer position='left'>
-                    {leftTeams.map((team: any, index: number) => (
+                    {leftTeams.map((team: any) => (
                         <TeamWrapper color={team.color}>
-                            <Place>{index + 1}</Place>
-                            <Team>{team.name}</Team>
+                            <Place>{team.overall_stats.position}</Place>
+                            <EditableTeam text={team.name}>{team.name}</EditableTeam>
                         </TeamWrapper>
                     ))}
                 </TeamsContainer>
                 <TeamsContainer position='right'>
-                    {rightTeams.map((team: any, index: number) => (
+                    {rightTeams.map((team: any) => (
                         <TeamWrapper color={team.color}>
-                            <Place>{index + leftTeams.length + 1}</Place>
-                            <Team>{team.name}</Team>
+                            <EditablePlace text={team.overall_stats.position}>{team.overall_stats.position}</EditablePlace>
+                            <EditableTeam text={team.name}>{team.name}</EditableTeam>
                         </TeamWrapper>
                     ))}
                 </TeamsContainer>
