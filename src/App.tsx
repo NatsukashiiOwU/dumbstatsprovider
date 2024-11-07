@@ -11,7 +11,7 @@ const InputForm = styled.div`
 
 const StyledInput = styled.input`
   padding: 0;
-  width: 82.35%;
+  width: auto;
   font-size: 2em;
   border: none;
   background-color: #1A1C1F;
