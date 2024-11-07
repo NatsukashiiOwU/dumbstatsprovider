@@ -1,5 +1,5 @@
 import { styled } from '@linaria/react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import background from './assets/background.png'
 import logos from './assets/logos.png'
@@ -31,10 +31,10 @@ const Title = styled.span<TitleProps>`
         transform: ${({ position }) => (position === 'center' ? 'translateX(-50%)' : 'none')};
         width: ${({ position }) => (position === 'center' ? 'auto' : 'fit-content')};
         text-align: ${({ position }) => {
-          if (position === 'left') return 'left';
-          if (position === 'right') return 'right';
-          return 'center';
-        }};
+    if (position === 'left') return 'left';
+    if (position === 'right') return 'right';
+    return 'center';
+  }};
 
         margin-top: ${({ subTitle }) => (subTitle ? '1.2em' : '0')};
 
@@ -259,71 +259,76 @@ const EditablePlace = ({ text, ...props }: { text: string, [key: string]: any })
 };
 
 const Scoreboard = ({ matchId }: { matchId: string }) => {
-    const scoreBoardRef = React.useRef<HTMLDivElement>(null);
+  const scoreBoardRef = React.useRef<HTMLDivElement>(null);
 
-    const { isLoading, error, data } = useQuery(
-        {
-            queryKey: ['matchSummary', matchId],
-            queryFn: () => fetch(`https://overstat.gg/api/stats/${matchId}/overall`).then((res) =>
-              res.json()
-            ),
-        }
-    );
-
-    if (isLoading) return <div>Loading...</div>;
-
-    if (error) return <div>An error has occurred: {error.message}</div>;
-
-    
-    const totalTeams = data.teams.length;
-    const leftTeams = data.teams.slice(0, 10);
-    const rightTeams = data.teams.slice(10);
-
-    if (totalTeams < 20) {
-        const placeholderTeams = Array.from({ length: 20 - totalTeams }, (_, i) => ({
-            name: ``,
-            overall_stats: { position: '' }
-        }));
-        data.teams.push(...placeholderTeams);
+  const { isLoading, error, data } = useQuery(
+    {
+      queryKey: ['matchSummary', matchId],
+      queryFn: () => fetch(`https://overstat.gg/api/stats/${matchId}/overall`).then((res) =>
+        res.json()
+      ),
     }
+  );
 
+  if (isLoading) return <div>Loading...</div>;
 
-    return (
-        <>
-            <head>
-                <style>
-                    @import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&family=Unbounded:wght@200..900&display=swap');
-                </style>
-            </head>
-            <BackgroundImage ref={scoreBoardRef}>
+  const leftTeams =  data.teams.slice(0, 10);
+  const rightTeams = data.teams.slice(10);
 
-                <EditableTitle text="QUALIFIER #2" position="left">QUALIFIER #2</EditableTitle>
+  const totalTeams = data.teams.length;
 
-                <EditableTitle text="REDRAGON X 13YOG" position="right">REDRAGON X 13YOG</EditableTitle>
+  if (totalTeams < 20) {
+    const placeholderTeams = Array.from({ length: 20 - totalTeams }, (_, i) => ({
+      name: ``,
+      overall_stats: { position: '' }
+    }));
+    data.teams.push(...placeholderTeams);
+  }
 
-                <EditableTitle text="LEAGUE" position="right" filled subTitle>LEAGUE</EditableTitle>
+  return (
+    <>
+      <head>
+        <style>
+          @import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&family=Unbounded:wght@200..900&display=swap');
+        </style>
+      </head>
+      <BackgroundImage ref={scoreBoardRef}>
 
-                <TeamsContainer position='left'>
-                    {leftTeams.map((team: any) => (
-                        <TeamWrapper color={team.color}>
-                            <Place>{team.overall_stats.position}</Place>
-                            <EditableTeam text={team.name}>{team.name}</EditableTeam>
-                        </TeamWrapper>
-                    ))}
-                </TeamsContainer>
-                <TeamsContainer position='right'>
-                    {rightTeams.map((team: any) => (
-                        <TeamWrapper color={team.color}>
-                            <EditablePlace text={team.overall_stats.position}>{team.overall_stats.position}</EditablePlace>
-                            <EditableTeam text={team.name}>{team.name}</EditableTeam>
-                        </TeamWrapper>
-                    ))}
-                </TeamsContainer>
-                <Logo />
-            </BackgroundImage>
-            <ExportButton onClick={() => downloadImage(scoreBoardRef, matchId)}>Export</ExportButton>
-        </>
-    );
+        <EditableTitle text="QUALIFIER #2" position="left">QUALIFIER #2</EditableTitle>
+
+        <EditableTitle text="REDRAGON X 13YOG" position="right">REDRAGON X 13YOG</EditableTitle>
+
+        <EditableTitle text="LEAGUE" position="right" filled subTitle>LEAGUE</EditableTitle>
+
+        <TeamsContainer position='left'>
+          {isLoading ? (
+            <div>Loading teams...</div>
+          ) : (
+            leftTeams.map((team: any) => (
+              <TeamWrapper color={team.color}>
+                <EditablePlace text={team.overall_stats.position}>{team.overall_stats.position}</EditablePlace>
+                <EditableTeam text={team.name}>{team.name}</EditableTeam>
+              </TeamWrapper>
+            ))
+          )}
+        </TeamsContainer>
+        <TeamsContainer position='right'>
+          {isLoading ? (
+            <div>Loading teams...</div>
+          ) : (
+            rightTeams.map((team: any) => (
+              <TeamWrapper color={team.color}>
+                <EditablePlace text={team.overall_stats.position}>{team.overall_stats.position}</EditablePlace>
+                <EditableTeam text={team.name}>{team.name}</EditableTeam>
+              </TeamWrapper>
+            ))
+          )}
+        </TeamsContainer>
+        <Logo />
+      </BackgroundImage>
+      <ExportButton onClick={() => downloadImage(scoreBoardRef, matchId)}>Export</ExportButton>
+    </>
+  );
 };
 
 export default Scoreboard;
