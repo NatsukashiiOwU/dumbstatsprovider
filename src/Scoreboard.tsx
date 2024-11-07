@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import background from './assets/background.png';
 import logos from './assets/logos.png';
 import domToImage from 'dom-to-image';
+import dummyResp from './assets/dummyResp.json?url'
 
 const BackgroundImage = styled.div`
   position: relative;
@@ -73,13 +74,30 @@ const Team = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
+  justify-content: space-between;
+  padding-inline: 1em;
+`;
+
+const TeamScore = styled.div`
+  width: fit-content;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+`
+
+const TeamName = styled.div`
+  height: 100%;
+  min-width: 2em;
   font-family: 'Unbounded', sans-serif;
   font-size: 18px;
   color: #fcfcfc;
-  padding-left: 1em;
-`;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
 
-const Place = styled.div`
+const Index = styled.div`
   width: 3.5em;
   height: 100%;
   background-color: #2a2c2d;
@@ -90,6 +108,50 @@ const Place = styled.div`
   font-size: 18px;
   align-items: center;
   margin-right: 0.2em;
+`;
+
+const Earnings = styled.div`
+  width: fit-content;
+  min-width: 2em;
+  height: 100%;
+  color: #B0FF34;
+  font-size: 18px;
+  font-family: 'Unbounded', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-right: 1em;
+`;
+
+const Score = styled.div`
+  width: fit-content;
+  min-width: 2em;
+  height: 100%;
+  color: #fcfcfc;
+  font-size: 18px;
+  font-family: 'Unbounded', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const VerticalDivider = styled.div`
+  margin-inline: 0.5em;
+  height: calc(100% - 3em);
+  width: 1px;
+  background-color: #ffffff;
+`;
+
+const Kills = styled.div`
+  width: fit-content;
+  min-width: 2em;
+  height: 100%;
+  color: #fcfcfc;
+  font-size: 18px;
+  font-family: 'Unbounded', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 const Logo = styled.div`
@@ -117,11 +179,6 @@ const ExportButton = styled.button`
   padding: 0.5em 1em;
   cursor: pointer;
 `;
-
-interface TeamData {
-  name: string;
-  overall_stats: { position: string };
-}
 
 const downloadImage = async (
   ref: React.RefObject<HTMLDivElement>,
@@ -191,7 +248,7 @@ const EditableTitle = ({
   );
 };
 
-const EditableTeam = ({
+const EditableTeamName = ({
   text,
   ...props
 }: {
@@ -213,8 +270,18 @@ const EditableTeam = ({
     setIsEditing(false);
   };
 
+  const placeholderShow = () => {
+    if (teamText === '')
+      setTeamText('Enter team name...')
+  }
+
+  const placeholderHide = () => {
+    if (teamText === 'Enter team name...' || teamText === '')
+      setTeamText('')
+  }
+
   return (
-    <Team {...props} onDoubleClick={handleDoubleClick}>
+    <TeamName {...props} onDoubleClick={handleDoubleClick} onMouseEnter={placeholderShow} onMouseLeave={placeholderHide}>
       {isEditing ? (
         <input
           placeholder="..."
@@ -234,11 +301,11 @@ const EditableTeam = ({
       ) : (
         teamText
       )}
-    </Team>
+    </TeamName>
   );
 };
 
-const EditablePlace = ({
+const EditableIndex = ({
   text,
   ...props
 }: {
@@ -246,26 +313,36 @@ const EditablePlace = ({
   [key: string]: any;
 }) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [placeText, setPlaceText] = useState(text);
+  const [indexText, setIndexText] = useState(text);
 
   const handleDoubleClick = () => {
     setIsEditing(true);
   };
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPlaceText(event.target.value);
+    setIndexText(event.target.value);
   };
 
   const handleBlur = () => {
     setIsEditing(false);
   };
 
+  const placeholderShow = () => {
+    if (indexText === '')
+      setIndexText('Enter index...')
+  }
+
+  const placeholderHide = () => {
+    if (indexText === 'Enter index...' || indexText === '')
+      setIndexText('')
+  }
+
   return (
-    <Place {...props} onDoubleClick={handleDoubleClick}>
+    <Index {...props} onDoubleClick={handleDoubleClick} onMouseEnter={placeholderShow} onMouseLeave={placeholderHide}>
       {isEditing ? (
         <input
           placeholder="..."
-          value={placeText}
+          value={indexText}
           onChange={handleInputChange}
           onBlur={handleBlur}
           style={{
@@ -279,11 +356,187 @@ const EditablePlace = ({
           }}
         />
       ) : (
-        placeText
+        indexText
       )}
-    </Place>
+    </Index>
   );
 };
+
+const EditableEarnings = ({
+  text,
+  ...props
+}: {
+  text: string;
+  [key: string]: any;
+}) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [earningsText, setEarningsText] = useState(text);
+
+  const handleDoubleClick = () => {
+    setIsEditing(true);
+  };
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setEarningsText(event.target.value);
+  };
+
+  const handleBlur = () => {
+    setIsEditing(false);
+  };
+
+  const placeholderShow = () => {
+    if (earningsText === '')
+      setEarningsText('Enter earnings...')
+  }
+
+  const placeholderHide = () => {
+    if (earningsText === 'Enter earnings...' || earningsText === '')
+      setEarningsText('')
+  }
+
+  return (
+    <Earnings {...props} onDoubleClick={handleDoubleClick} onMouseEnter={placeholderShow} onMouseLeave={placeholderHide}>
+      {isEditing ? (
+        <input
+          placeholder="..."
+          value={earningsText}
+          onChange={handleInputChange}
+          onBlur={handleBlur}
+          style={{
+            backgroundColor: 'transparent',
+            color: 'inherit',
+            border: 'none',
+            outline: 'none',
+            fontFamily: 'inherit',
+            fontSize: 'inherit',
+            fontWeight: 'inherit',
+          }}
+        />
+      ) : (
+        earningsText
+      )}
+    </Earnings>
+  );
+};
+
+const EditableKills = ({
+  text,
+  ...props
+}: {
+  text: string;
+  [key: string]: any;
+}) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [killsText, setKillsText] = useState(text);
+
+  const handleDoubleClick = () => {
+    setIsEditing(true);
+  };
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setKillsText(event.target.value);
+  };
+
+  const handleBlur = () => {
+    setIsEditing(false);
+  };
+
+  const placeholderShow = () => {
+    if (killsText === '')
+      setKillsText('Enter kills...')
+  }
+
+  const placeholderHide = () => {
+    if (killsText === 'Enter kills...' || killsText === '')
+      setKillsText('')
+  }
+
+  return (
+    <Kills {...props} onDoubleClick={handleDoubleClick} onMouseEnter={placeholderShow} onMouseLeave={placeholderHide}>
+      {isEditing ? (
+        <input
+          placeholder="..."
+          value={killsText}
+          onChange={handleInputChange}
+          onBlur={handleBlur}
+          style={{
+            backgroundColor: 'transparent',
+            color: 'inherit',
+            border: 'none',
+            outline: 'none',
+            fontFamily: 'inherit',
+            fontSize: 'inherit',
+            fontWeight: 'inherit',
+          }}
+        />
+      ) : (
+        killsText
+      )}
+    </Kills>
+  );
+};
+
+const EditableScore = ({
+  text,
+  ...props
+}: {
+  text: string;
+  [key: string]: any;
+}) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [scoreText, setScoreText] = useState(text);
+
+  const handleDoubleClick = () => {
+    setIsEditing(true);
+  };
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setScoreText(event.target.value);
+  };
+
+  const handleBlur = () => {
+    setIsEditing(false);
+  };
+
+  const placeholderShow = () => {
+    if (scoreText === '')
+      setScoreText('Enter score...')
+  }
+
+  const placeholderHide = () => {
+    if (scoreText === 'Enter score...' || scoreText === '')
+      setScoreText('')
+  }
+
+  return (
+    <Score {...props} onDoubleClick={handleDoubleClick} onMouseEnter={placeholderShow} onMouseLeave={placeholderHide}>
+      {isEditing ? (
+        <input
+          placeholder="..."
+          value={scoreText}
+          onChange={handleInputChange}
+          onBlur={handleBlur}
+          style={{
+            backgroundColor: 'transparent',
+            color: 'inherit',
+            border: 'none',
+            outline: 'none',
+            fontFamily: 'inherit',
+            fontSize: 'inherit',
+            fontWeight: 'inherit',
+          }}
+        />
+      ) : (
+        scoreText
+      )}
+    </Score>
+  );
+};
+
+interface TeamData {
+  name: string;
+  overall_stats: { position: string, score: string, kills: string };
+}
 
 const Scoreboard = ({ matchId }: { matchId: string }) => {
   const scoreBoardRef = useRef<HTMLDivElement>(null);
@@ -292,11 +545,21 @@ const Scoreboard = ({ matchId }: { matchId: string }) => {
     {
       queryKey: ['matchSummary', matchId],
       queryFn: () =>
-        fetch(`https://overstat.gg/api/stats/${matchId}/overall`).then(
+        fetch(dummyResp).then(
           (res) => res.json()
-        ),
-    },
-  );
+        )
+    }
+  )
+
+  // const { isLoading, error, data } = useQuery(
+  //   {
+  //     queryKey: ['matchSummary', matchId],
+  //     queryFn: () =>
+  //       fetch(`https://overstat.gg/api/stats/${matchId}/overall`).then(
+  //         (res) => res.json()
+  //       ),
+  //   },
+  // );
 
   useEffect(() => {
     if (error) {
@@ -310,7 +573,7 @@ const Scoreboard = ({ matchId }: { matchId: string }) => {
     ...teams,
     ...Array.from({ length: 20 - teams.length }, (_, i) => ({
       name: '',
-      overall_stats: { position: '' },
+      overall_stats: { position: '', score: '', kills: '' },
     })),
   ] : teams;
 
@@ -342,10 +605,16 @@ const Scoreboard = ({ matchId }: { matchId: string }) => {
           {!isLoading &&
             leftTeams.map((team: TeamData) => (
               <TeamWrapper key={team.name}>
-                <EditablePlace text={team.overall_stats.position}>
-                  {team.overall_stats.position}
-                </EditablePlace>
-                <EditableTeam text={team.name}>{team.name}</EditableTeam>
+                <EditableIndex text={team.overall_stats.position} />
+                <Team>
+                    <EditableTeamName text={team.name} />
+                    <TeamScore>
+                      <EditableEarnings text='' />
+                      <EditableKills text={team.overall_stats.kills} />
+                      {(team.overall_stats.kills === '' || team.overall_stats.score === '') ? '' : <VerticalDivider />}
+                      <EditableScore text={team.overall_stats.score} />
+                    </TeamScore>
+                </Team>
               </TeamWrapper>
             ))}
         </TeamsContainer>
@@ -354,10 +623,16 @@ const Scoreboard = ({ matchId }: { matchId: string }) => {
           {!isLoading &&
             rightTeams.map((team: TeamData) => (
               <TeamWrapper key={team.name}>
-                <EditablePlace text={team.overall_stats.position}>
-                  {team.overall_stats.position}
-                </EditablePlace>
-                <EditableTeam text={team.name}>{team.name}</EditableTeam>
+                <EditableIndex text={team.overall_stats.position} />
+                <Team>
+                    <EditableTeamName text={team.name} />
+                    <TeamScore>
+                      <EditableEarnings text='' />
+                      <EditableKills text={team.overall_stats.kills} />
+                      {(team.overall_stats.kills === '' || team.overall_stats.score === '') ? '' : <VerticalDivider />}
+                      <EditableScore text={team.overall_stats.score} />
+                    </TeamScore>
+                </Team>
               </TeamWrapper>
             ))}
         </TeamsContainer>
