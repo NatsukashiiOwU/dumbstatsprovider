@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import background from './assets/background.png';
 import logos from './assets/logos.png';
 import domToImage from 'dom-to-image';
-import dummyResp from './assets/dummyResp.json?url'
+// import dummyResp from './assets/dummyResp.json?url'
 
 const BackgroundImage = styled.div`
   position: relative;
@@ -609,25 +609,26 @@ interface TeamData {
 const Scoreboard = ({ matchId }: { matchId: string }) => {
   const scoreBoardRef = useRef<HTMLDivElement>(null);
 
-  const { isLoading, error, data } = useQuery(
-    {
-      queryKey: ['matchSummary', matchId],
-      queryFn: () =>
-        fetch(dummyResp).then(
-          (res) => res.json()
-        )
-    }
-  )
-
+  // dummy fetch
   // const { isLoading, error, data } = useQuery(
   //   {
   //     queryKey: ['matchSummary', matchId],
   //     queryFn: () =>
-  //       fetch(`https://overstat.gg/api/stats/${matchId}/overall`).then(
+  //       fetch(dummyResp).then(
   //         (res) => res.json()
-  //       ),
-  //   },
-  // );
+  //       )
+  //   }
+  // )
+
+  const { isLoading, error, data } = useQuery(
+    {
+      queryKey: ['matchSummary', matchId],
+      queryFn: () =>
+        fetch(`https://overstat.gg/api/stats/${matchId}/overall`).then(
+          (res) => res.json()
+        ),
+    },
+  );
 
   useEffect(() => {
     if (error) {

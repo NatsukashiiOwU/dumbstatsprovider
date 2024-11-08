@@ -53,7 +53,7 @@ function App() {
     </InputForm>
       
       {
-        // matchId &&
+        matchId &&
         <>
           <div ref={scoreBoardRef}>
             <Scoreboard matchId={matchId} />
