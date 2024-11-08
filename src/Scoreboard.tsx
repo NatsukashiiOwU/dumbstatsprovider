@@ -544,61 +544,42 @@ const EditableScore = ({
 };
 
 const EditableVerticalDivider = ({
-  text,
+  shown,
   ...props
 }: {
-  text: string;
+  shown: boolean;
   [key: string]: any;
 }) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [dividerText, setDividerText] = useState(text);
-
-  const handleDoubleClick = () => {
-    setIsEditing(true);
-  };
+  const [dividerShow, setdividerShow] = useState(shown);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setDividerText(event.target.value);
-  };
-
-  const handleBlur = () => {
-    setIsEditing(false);
+    setdividerShow(event.target.checked);
   };
 
   const placeholderShow = () => {
-    if (dividerText === '')
-      setDividerText('Show divider?')
+    setIsEditing(true);
   }
 
   const placeholderHide = () => {
-    if (dividerText === 'Show divider?' || dividerText === '')
-      setDividerText('')
+    setIsEditing(false);
   }
 
   return (
-    <DividerWrapper {...props} onDoubleClick={handleDoubleClick} onMouseEnter={placeholderShow} onMouseLeave={placeholderHide}>
+    <DividerWrapper {...props} onMouseEnter={placeholderShow} onMouseLeave={placeholderHide}>
       {isEditing ? (
         <input
+          type='checkbox'
           placeholder="..."
-          value={dividerText}
+          title='divider?'
+          checked={dividerShow}
           onChange={handleInputChange}
-          onBlur={handleBlur}
-          style={{
-            backgroundColor: 'transparent',
-            color: 'inherit',
-            border: 'none',
-            outline: 'none',
-            fontFamily: 'inherit',
-            fontSize: 'inherit',
-            fontWeight: 'inherit',
-          }}
         />
       ) : (
-        dividerText ? <VerticalDivider /> : dividerText
+        dividerShow ? <VerticalDivider /> : dividerShow
       )}
     </DividerWrapper>
   );
-
 }
 
 interface TeamData {
@@ -680,7 +661,7 @@ const Scoreboard = ({ matchId }: { matchId: string }) => {
                     <TeamScore>
                       <EditableEarnings text='' />
                       <EditableKills text={team.overall_stats.kills} />
-                      {(team.overall_stats.kills === '' || team.overall_stats.score === '') ? <EditableVerticalDivider text='' /> : <EditableVerticalDivider text='|' />}
+                      {(team.overall_stats.kills === '' || team.overall_stats.score === '') ? <EditableVerticalDivider /> : <EditableVerticalDivider shown />}
                       <EditableScore text={team.overall_stats.score} />
                     </TeamScore>
                 </Team>
@@ -698,7 +679,7 @@ const Scoreboard = ({ matchId }: { matchId: string }) => {
                     <TeamScore>
                       <EditableEarnings text='' />
                       <EditableKills text={team.overall_stats.kills} />
-                      {(team.overall_stats.kills === '' || team.overall_stats.score === '') ? <EditableVerticalDivider text='' /> : <EditableVerticalDivider text='|' />}
+                      {(team.overall_stats.kills === '' || team.overall_stats.score === '') ? <EditableVerticalDivider /> : <EditableVerticalDivider shown />}
                       <EditableScore text={team.overall_stats.score} />
                     </TeamScore>
                 </Team>
