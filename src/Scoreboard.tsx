@@ -547,11 +547,11 @@ const EditableVerticalDivider = ({
   shown,
   ...props
 }: {
-  shown: boolean;
+  shown?: boolean;
   [key: string]: any;
 }) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [dividerShow, setdividerShow] = useState(shown);
+  const [dividerShow, setdividerShow] = useState(shown || false);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setdividerShow(event.target.checked);
