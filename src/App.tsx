@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
-import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query';
 import Scoreboard from './Scoreboard';
 import { styled } from '@linaria/react';
+import { useParams, useSearchParams } from 'react-router-dom';
+
 
 const InputForm = styled.div`
   width:1920px;
@@ -24,10 +25,29 @@ const StyledSpan = styled.span`
   color: #1A1C1F;
 `
 
-
 function App() {
+  const [matchId, setMatchId] = useState('');
+  const [ui, setUi] = useState(true);
+
+  const [urlParams] = useSearchParams();
+  console.log(urlParams.get('ui'))
+
+  useEffect(() => {
+    const urlId = urlParams.get('id');
+    if (urlId) {
+      setMatchId(urlId);
+    }
+    
+    if (urlParams.has('ui')) {
+      setUi(false)
+    }
+  }, []);
+
+  return <Renderer matchId={matchId} setMatchId={setMatchId} ui={ui} />;
+}
+
+function Renderer({ matchId, setMatchId, ui }: { matchId: string, setMatchId: React.Dispatch<React.SetStateAction<string>>, ui: boolean }) {
   const [matchUrl, setMatchUrl] = useState('')
-  const [matchId, setMatchId] = useState('')
   
   const extractMatchId = (url: string) => {
     const match = url.match(/\/stats\/(\d+)\//);
@@ -47,16 +67,16 @@ function App() {
 
   return (
     <>
-    <InputForm>
+    {ui && <InputForm>
     <StyledSpan>{'Enter Overstat URL: '}</StyledSpan>
       <StyledInput placeholder='https://overstat.gg/api/stats/9887/summary' onBlur={(e) => setMatchUrl(e.target.value)} onChange={handleInputChange} />
-    </InputForm>
+    </InputForm>}
       
       {
         matchId &&
         <>
           <div ref={scoreBoardRef}>
-            <Scoreboard matchId={matchId} />
+            <Scoreboard matchId={matchId} ui={ui} />
           </div>
         </>
 

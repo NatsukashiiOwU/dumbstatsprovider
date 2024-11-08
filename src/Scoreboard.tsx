@@ -587,7 +587,7 @@ interface TeamData {
   overall_stats: { position: string, score: string, kills: string };
 }
 
-const Scoreboard = ({ matchId }: { matchId: string }) => {
+const Scoreboard = ({ matchId, ui }: { matchId: string, ui: boolean }) => {
   const scoreBoardRef = useRef<HTMLDivElement>(null);
 
   // dummy fetch
@@ -688,9 +688,9 @@ const Scoreboard = ({ matchId }: { matchId: string }) => {
         </TeamsContainer>
         <Logo />
       </BackgroundImage>
-      <ExportButton onClick={() => downloadImage(scoreBoardRef, matchId)}>
+      {ui && <ExportButton onClick={() => downloadImage(scoreBoardRef, matchId)}>
         Export
-      </ExportButton>
+      </ExportButton>}
     </>
   );
 };
