@@ -48,6 +48,7 @@ const Title = styled.span<TitleProps>`
   font-family: 'Unbounded', sans-serif;
   font-weight: 900;
   font-size: 48px;
+  padding-inline: 0.2em;
 `;
 
 const TeamsContainer = styled.div<{ position: 'left' | 'right' }>`
@@ -654,11 +655,12 @@ const Scoreboard = ({ matchId, ui }: { matchId: string, ui: boolean }) => {
   const rightTeams = displayedTeams.slice(10);
 
   //remove RD x 13YOG
-  const matchName = matchData?.eventId.toUpperCase().replace(/RD X 13YOG|\s*/g, '') || 'Match Name';
+  const matchName = matchData?.eventId.toUpperCase().replace(/RD X 13YOG/g, '') || 'Match Name';
   const matchTitle = matchName.split('|')[0];
   const matchSubtitle = matchName.split('|')[1];
 
-  ;
+  console.log(matchTitle)
+  console.log(matchSubtitle)
 
   return (
     <>
