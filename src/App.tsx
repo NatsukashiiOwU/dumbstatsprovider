@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import Scoreboard from './Scoreboard';
 import { styled } from '@linaria/react';
-import { useParams, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 
 
 const InputForm = styled.div`
@@ -30,7 +30,6 @@ function App() {
   const [ui, setUi] = useState(true);
 
   const [urlParams] = useSearchParams();
-  console.log(urlParams.get('ui'))
 
   useEffect(() => {
     const urlId = urlParams.get('id');
