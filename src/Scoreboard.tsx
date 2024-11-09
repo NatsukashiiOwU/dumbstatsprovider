@@ -51,11 +51,11 @@ const Title = styled.span<TitleProps>`
 `;
 
 const TeamsContainer = styled.div<{ position: 'left' | 'right' }>`
-  width: 61em;
+  width: 60em;
   position: absolute;
-  top: 16em;
-  left: ${({ position }) => (position === 'left' ? '5%' : 'auto')};
-  right: ${({ position }) => (position === 'right' ? '5%' : 'auto')};
+  top: 15em;
+  left: ${({ position }) => (position === 'left' ? '7em' : 'auto')};
+  right: ${({ position }) => (position === 'right' ? '7em' : 'auto')};
 `;
 
 const TeamWrapper = styled.div`
@@ -163,6 +163,19 @@ const Kills = styled.div`
   justify-content: center;
   align-items: center;
 `;
+
+const StatsDesc = styled.div`
+  color: #fcfcfc;
+  font-size: 16px;
+  font-family: 'Unbounded', sans-serif;
+  display: block;
+  left: 45.5em;
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 6.65em;
+`
 
 const Logo = styled.div`
   position: absolute;
@@ -672,6 +685,11 @@ const Scoreboard = ({ matchId, ui }: { matchId: string, ui: boolean }) => {
         <TeamsContainer position="left">
           {(isLoadingMatch||isLoadingStats) && <div>Loading teams...</div>}
           {!(isLoadingMatch||isLoadingStats) &&
+            <StatsDesc>
+            <span>kills</span>
+            <span>score</span>
+            </StatsDesc>}
+          {!(isLoadingMatch||isLoadingStats) &&
             leftTeams.map((team: TeamData) => (
               <TeamWrapper key={team.name}>
                 <EditableIndex text={team.overall_stats.position} />
@@ -689,6 +707,11 @@ const Scoreboard = ({ matchId, ui }: { matchId: string, ui: boolean }) => {
         </TeamsContainer>
         <TeamsContainer position="right">
           {(isLoadingMatch||isLoadingStats) && <div>Loading teams...</div>}
+          {!(isLoadingMatch||isLoadingStats) &&
+            <StatsDesc>
+            <span>kills</span>
+            <span>score</span>
+            </StatsDesc>}
           {!(isLoadingMatch||isLoadingStats) &&
             rightTeams.map((team: TeamData) => (
               <TeamWrapper key={team.name}>
