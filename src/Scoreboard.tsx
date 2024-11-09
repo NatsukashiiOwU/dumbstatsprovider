@@ -654,9 +654,11 @@ const Scoreboard = ({ matchId, ui }: { matchId: string, ui: boolean }) => {
   const rightTeams = displayedTeams.slice(10);
 
   //remove RD x 13YOG
-  const matchName = matchData?.eventId.replace(/RD x 13YOG|\s*/g, '') || 'Match Name';
-  const matchTitle = 'QUALIFIER '+matchName.split('|')[0].slice(-1);
+  const matchName = matchData?.eventId.toUpperCase().replace(/RD X 13YOG|\s*/g, '') || 'Match Name';
+  const matchTitle = matchName.split('|')[0];
   const matchSubtitle = matchName.split('|')[1];
+
+  ;
 
   return (
     <>
