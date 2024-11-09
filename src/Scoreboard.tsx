@@ -659,9 +659,6 @@ const Scoreboard = ({ matchId, ui }: { matchId: string, ui: boolean }) => {
   const matchTitle = matchName.split('|')[0];
   const matchSubtitle = matchName.split('|')[1];
 
-  console.log(matchTitle)
-  console.log(matchSubtitle)
-
   return (
     <>
       <head>
