@@ -601,7 +601,17 @@ const Scoreboard = ({ matchId, ui }: { matchId: string, ui: boolean }) => {
   //   }
   // )
 
-  const { isLoading, error, data } = useQuery(
+  const { isLoading:isLoadingMatch, error:errorMatch, data:matchData } = useQuery(
+    {
+      queryKey: ['match', matchId],
+      queryFn: () =>
+        fetch(`https://overstat.gg/api/match/${matchId}`).then(
+          (res) => res.json()
+        ),
+    },
+  );
+
+  const { isLoading:isLoadingStats, error:errorStats, data:statsData } = useQuery(
     {
       queryKey: ['matchSummary', matchId],
       queryFn: () =>
@@ -612,12 +622,12 @@ const Scoreboard = ({ matchId, ui }: { matchId: string, ui: boolean }) => {
   );
 
   useEffect(() => {
-    if (error) {
-      console.error('Error fetching data:', error);
+    if (errorMatch || errorStats) {
+      console.error('Error fetching data:', errorMatch || errorStats);
     }
-  }, [error]);
+  }, [errorMatch || errorStats]);
 
-  const teams = data?.teams || [];
+  const teams = statsData?.teams || [];
 
   const displayedTeams: TeamData[] = teams.length < 20 ? [
     ...teams,
@@ -630,6 +640,11 @@ const Scoreboard = ({ matchId, ui }: { matchId: string, ui: boolean }) => {
   const leftTeams = displayedTeams.slice(0, 10);
   const rightTeams = displayedTeams.slice(10);
 
+  //remove RD x 13YOG
+  const matchName = matchData?.eventId.replace(/RD x 13YOG|\s*/g, '') || 'Match Name';
+  const matchTitle = 'QUALIFIER '+matchName.split('|')[0].slice(-1);
+  const matchSubtitle = matchName.split('|')[1];
+
   return (
     <>
       <head>
@@ -638,10 +653,14 @@ const Scoreboard = ({ matchId, ui }: { matchId: string, ui: boolean }) => {
         </style>
       </head>
       <BackgroundImage ref={scoreBoardRef}>
-        <EditableTitle text="QUALIFIER #2" position="left">
+        {!(isLoadingMatch||isLoadingStats) && <EditableTitle text={matchTitle} position="left">
           QUALIFIER #2
         </EditableTitle>
-
+        }
+        {!(isLoadingMatch||isLoadingStats) && <EditableTitle text={matchSubtitle} position="left" filled subTitle>
+          {''}
+        </EditableTitle>
+        }
         <EditableTitle text="REDRAGON X 13YOG" position="right">
           REDRAGON X 13YOG
         </EditableTitle>
@@ -651,8 +670,8 @@ const Scoreboard = ({ matchId, ui }: { matchId: string, ui: boolean }) => {
         </EditableTitle>
 
         <TeamsContainer position="left">
-          {isLoading && <div>Loading teams...</div>}
-          {!isLoading &&
+          {(isLoadingMatch||isLoadingStats) && <div>Loading teams...</div>}
+          {!(isLoadingMatch||isLoadingStats) &&
             leftTeams.map((team: TeamData) => (
               <TeamWrapper key={team.name}>
                 <EditableIndex text={team.overall_stats.position} />
@@ -669,8 +688,8 @@ const Scoreboard = ({ matchId, ui }: { matchId: string, ui: boolean }) => {
             ))}
         </TeamsContainer>
         <TeamsContainer position="right">
-          {isLoading && <div>Loading teams...</div>}
-          {!isLoading &&
+          {(isLoadingMatch||isLoadingStats) && <div>Loading teams...</div>}
+          {!(isLoadingMatch||isLoadingStats) &&
             rightTeams.map((team: TeamData) => (
               <TeamWrapper key={team.name}>
                 <EditableIndex text={team.overall_stats.position} />
