@@ -4,4 +4,6 @@ https://natsukashiiowu.github.io/dumbstatsprovider/?id=9764&ui
 
 Айди брать из: !commands add !score $(urlfetch https://overstat.gg/api/stats/**953**/summary) -- https://overstat.gg/_Q7DwA
 
-ui скрывает интерфейс для интеграции в обс
+ui скрывает интерфейс, для интеграции в обс
+
+кнопка экспорта выгружает фотку в 1920х1080 формате
