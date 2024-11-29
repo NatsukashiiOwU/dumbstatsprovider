@@ -84,7 +84,7 @@ function Renderer({ matchId, gameNumber, setMatchId, ui }: { matchId: string, ga
     </InputForm>}
       <QueryClientProvider client={queryClient}>
       {
-        // matchId &&
+        matchId &&
         <>
           <div ref={scoreBoardRef}>
             <Scoreboard matchId={matchId} gameNumber={gameNumber} ui={ui} />
