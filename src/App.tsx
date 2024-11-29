@@ -34,21 +34,12 @@ function App() {
   const location = useLocation();
 
   useEffect(() => {
-    if (location.pathname) {
-      const matchId = location.pathname.split('/')[1];
-      setMatchId(matchId);
-    }
-
-    if (location.pathname.includes('game')) {
-      const gameNumber = location.pathname.split('/')[3];
-      setGameNumber(gameNumber);
-    } else {
-      setGameNumber('OVERALL');
-    }
-
-    if (location.search.includes('ui')) {
-      setUi(false)
-    }
+    const urlParams = new URLSearchParams(location.search);
+    setMatchId(urlParams.get('match') || '');
+    setGameNumber(urlParams.get('game') || 'OVERALL');
+    if(urlParams.has('ui')){
+      setUi(urlParams.get('ui') === 'true');
+      }
   }, [location]);
 
   return <Renderer matchId={matchId} gameNumber={gameNumber} setMatchId={setMatchId} ui={ui} />;
@@ -84,7 +75,7 @@ function Renderer({ matchId, gameNumber, setMatchId, ui }: { matchId: string, ga
     </InputForm>}
       <QueryClientProvider client={queryClient}>
       {
-        // matchId &&
+        matchId &&
         <>
           <div ref={scoreBoardRef}>
             <Scoreboard matchId={matchId} gameNumber={gameNumber} ui={ui} />
