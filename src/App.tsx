@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import Scoreboard from './Scoreboard';
 import { styled } from '@linaria/react';
-import { useSearchParams } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 
 const InputForm = styled.div`
@@ -27,27 +28,35 @@ const StyledSpan = styled.span`
 
 function App() {
   const [matchId, setMatchId] = useState('');
+  const [gameNumber, setGameNumber] = useState('OVERALL');
   const [ui, setUi] = useState(true);
 
-  const [urlParams] = useSearchParams();
+  const location = useLocation();
 
   useEffect(() => {
-    const urlId = urlParams.get('id');
-    if (urlId) {
-      setMatchId(urlId);
+    if (location.pathname) {
+      const matchId = location.pathname.split('/')[1];
+      setMatchId(matchId);
     }
-    
-    if (urlParams.has('ui')) {
+
+    if (location.pathname.includes('game')) {
+      const gameNumber = location.pathname.split('/')[3];
+      setGameNumber(gameNumber);
+    } else {
+      setGameNumber('OVERALL');
+    }
+
+    if (location.search.includes('ui')) {
       setUi(false)
     }
-  }, []);
+  }, [location]);
 
-  return <Renderer matchId={matchId} setMatchId={setMatchId} ui={ui} />;
+  return <Renderer matchId={matchId} gameNumber={gameNumber} setMatchId={setMatchId} ui={ui} />;
 }
 
-function Renderer({ matchId, setMatchId, ui }: { matchId: string, setMatchId: React.Dispatch<React.SetStateAction<string>>, ui: boolean }) {
+function Renderer({ matchId, gameNumber, setMatchId, ui }: { matchId: string, gameNumber: string, setMatchId: React.Dispatch<React.SetStateAction<string>>, ui: boolean }) {
   const [matchUrl, setMatchUrl] = useState('')
-  
+
   const extractMatchId = (url: string) => {
     const match = url.match(/\/stats\/(\d+)\//);
     return match ? match[1] : '';
@@ -64,22 +73,25 @@ function Renderer({ matchId, setMatchId, ui }: { matchId: string, setMatchId: Re
 
   const scoreBoardRef = useRef<HTMLDivElement>(null);
 
+  const queryClient = new QueryClient();
+
+
   return (
     <>
     {ui && <InputForm>
     <StyledSpan>{'Enter Overstat URL: '}</StyledSpan>
       <StyledInput placeholder='https://overstat.gg/api/stats/9887/summary' onBlur={(e) => setMatchUrl(e.target.value)} onChange={handleInputChange} />
     </InputForm>}
-      
+      <QueryClientProvider client={queryClient}>
       {
-        matchId &&
+        // matchId &&
         <>
           <div ref={scoreBoardRef}>
-            <Scoreboard matchId={matchId} ui={ui} />
+            <Scoreboard matchId={matchId} gameNumber={gameNumber} ui={ui} />
           </div>
         </>
-
       }
+      </QueryClientProvider>
     </>
   )
 }
