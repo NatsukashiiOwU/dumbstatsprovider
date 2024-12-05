@@ -20,7 +20,7 @@ https://natsukashiiowu.github.io/dumbstatsprovider/
 5. Для экспорта картинки 1920x1080 жмем "EXPORT"
 
 # Инструкция(ДЛЯ ОБСА)
-https://natsukashiiowu.github.io/dumbstatsprovider/?id={айди_матча}&ui
+https://natsukashiiowu.github.io/dumbstatsprovider/?match={айди_матча}&game={номер_игры}&ui
 
 1. Открываем оверстат
 
@@ -33,6 +33,11 @@ https://natsukashiiowu.github.io/dumbstatsprovider/?id={айди_матча}&ui
 3. Копируем id отсюда, вставялем в ссылку сверху
 
 ![image](https://github.com/user-attachments/assets/de65db35-78ad-4cd7-bdda-c35d5a86ede4)
+
+3.1. Если нужна стата за конкретную игру то прописываем номер в &game={1}
+
+![image](https://github.com/user-attachments/assets/8aca7eb1-e6c8-4033-a9d6-f6b64c857cc9)
+
 
 4. В обсе добавляем browser source, вставляем ссылку, выставляем 1920x1080
 
