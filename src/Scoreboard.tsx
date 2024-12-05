@@ -211,11 +211,9 @@ const Scoreboard = ({ matchId, gameNumber, ui, setMatchId, setGameNumber }: { ma
     const handleGameChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         if (event.target.value === 'OVERALL') {
             setGameNumber('OVERALL');
-            navigate(`/`);
             return;
         }
         setGameNumber(event.target.value);
-        navigate(`/`);
     };
 
     return (
