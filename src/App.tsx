@@ -37,15 +37,15 @@ function App() {
     const urlParams = new URLSearchParams(location.search);
     setMatchId(urlParams.get('match') || '');
     setGameNumber(urlParams.get('game') || 'OVERALL');
-    if(urlParams.has('ui')){
+    if (urlParams.has('ui')) {
       setUi(urlParams.get('ui') === 'true');
-      }
+    }
   }, [location]);
 
-  return <Renderer matchId={matchId} gameNumber={gameNumber} setMatchId={setMatchId} ui={ui} />;
+  return <Renderer matchId={matchId} gameNumber={gameNumber} setGameNumber={setGameNumber} setMatchId={setMatchId} ui={ui} />;
 }
 
-function Renderer({ matchId, gameNumber, setMatchId, ui }: { matchId: string, gameNumber: string, setMatchId: React.Dispatch<React.SetStateAction<string>>, ui: boolean }) {
+function Renderer({ matchId, gameNumber, setMatchId, setGameNumber, ui }: { matchId: string, gameNumber: string, setGameNumber: React.Dispatch<React.SetStateAction<string>>, setMatchId: React.Dispatch<React.SetStateAction<string>>, ui: boolean }) {
   const [matchUrl, setMatchUrl] = useState('')
 
   const extractMatchId = (url: string) => {
@@ -69,19 +69,19 @@ function Renderer({ matchId, gameNumber, setMatchId, ui }: { matchId: string, ga
 
   return (
     <>
-    {ui && <InputForm>
-    <StyledSpan>{'Enter Overstat URL: '}</StyledSpan>
-      <StyledInput placeholder='https://overstat.gg/api/stats/9887/summary' onBlur={(e) => setMatchUrl(e.target.value)} onChange={handleInputChange} />
-    </InputForm>}
+      {ui && <InputForm>
+        <StyledSpan>{'Enter Overstat URL: '}</StyledSpan>
+        <StyledInput placeholder='https://overstat.gg/api/stats/9887/summary' onBlur={(e) => setMatchUrl(e.target.value)} onChange={handleInputChange} />
+      </InputForm>}
       <QueryClientProvider client={queryClient}>
-      {
-        matchId &&
-        <>
-          <div ref={scoreBoardRef}>
-            <Scoreboard matchId={matchId} gameNumber={gameNumber} ui={ui} />
-          </div>
-        </>
-      }
+        {
+          matchId &&
+          <>
+            <div ref={scoreBoardRef}>
+              <Scoreboard matchId={matchId} gameNumber={gameNumber} setMatchId={setMatchId} setGameNumber={setGameNumber} ui={ui} />
+            </div>
+          </>
+        }
       </QueryClientProvider>
     </>
   )

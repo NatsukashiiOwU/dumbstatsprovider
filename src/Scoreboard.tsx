@@ -141,7 +141,7 @@ interface TeamData {
     overall_stats: { position: string, score: string, kills: string, teamPlacement: string };
 }
 
-const Scoreboard = ({ matchId, gameNumber, ui }: { matchId: string, gameNumber: string, ui: boolean }) => {
+const Scoreboard = ({ matchId, gameNumber, ui, setMatchId, setGameNumber }: { matchId: string, gameNumber: string, ui: boolean, setGameNumber: React.Dispatch<React.SetStateAction<string>>, setMatchId: React.Dispatch<React.SetStateAction<string>>, }) => {
     const scoreBoardRef = useRef<HTMLDivElement>(null);
     // dummy fetch
     // const { isLoading, error, data } = useQuery(
@@ -210,10 +210,12 @@ const Scoreboard = ({ matchId, gameNumber, ui }: { matchId: string, gameNumber: 
 
     const handleGameChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         if (event.target.value === 'OVERALL') {
-            navigate(`/${matchId}/`);
+            setGameNumber('OVERALL');
+            navigate(`/`);
             return;
         }
-        navigate(`/${matchId}/game/${event.target.value}`);
+        setGameNumber(event.target.value);
+        navigate(`/`);
     };
 
     return (
