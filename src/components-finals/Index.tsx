@@ -14,7 +14,7 @@ const StyledIndex = styled.div`
   font-weight: 600;
   font-size: 18px;
   align-items: center;
-  margin-right: 0.1em;
+  margin-right: 0.22em;
 `;
 
 const Index = ({

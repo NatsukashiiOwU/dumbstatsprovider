@@ -163,7 +163,6 @@ const WINNER = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  width: 6.7em;
   z-index:2;
 `
 
@@ -175,6 +174,7 @@ const GRANDFINAL = styled.div`
   display: block;
   left: 37%;
   position: absolute;
+  width:100%;
   top: 6%;
   z-index:2;
 `
