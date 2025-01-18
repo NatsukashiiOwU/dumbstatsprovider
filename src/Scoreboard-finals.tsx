@@ -372,7 +372,7 @@ const ScoreboardFinals = ({ matchId, gameNumber, ui, setMatchId, setGameNumber }
                             ))}
                         </TeamsContainer>
                         <Logo />
-                        <Stage>GROUP STAGE</Stage>
+                        <Stage>{matchName}</Stage>
                         <WINNER>WINNERS</WINNER>
                     </>
                 )}
