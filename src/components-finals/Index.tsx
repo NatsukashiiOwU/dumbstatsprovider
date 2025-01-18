@@ -2,7 +2,7 @@ import { styled } from "@linaria/react";
 import { useState } from "react";
 
 const StyledIndex = styled.div`
-  width: 3.5em;
+  width: 7%;
   height: 100%;
   background-color: transparent;
   // dotted border
@@ -11,10 +11,10 @@ const StyledIndex = styled.div`
   display: flex;
   justify-content: center;
   font-family: 'Unbounded', sans-serif;
-  font-weight: 600;
+  font-weight: 500;
   font-size: 18px;
   align-items: center;
-  margin-right: 0.22em;
+  margin-right: 0.5%;
 `;
 
 const Index = ({

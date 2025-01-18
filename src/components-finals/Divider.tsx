@@ -12,11 +12,12 @@ const DividerWrapper = styled.div`
 `
 
 const StyledVerticalDivider = styled.div`
-  margin-inline: 0.5em;
-  height: calc(100% - 1.2em);
-  width: 1.5px;
-  background-color: #000000;
-  opacity: 0.3;
+  margin-inline: 0.5%;
+  height: calc(100% - 20%);
+  width: 0.1px;
+  background-color: transparent;
+  border: dashed 1px #000000;
+  opacity: 0.35;
 `;
 
 const VerticalDivider = ({
@@ -52,7 +53,7 @@ const VerticalDivider = ({
                     onChange={handleInputChange}
                 />
             ) : (
-                dividerShow ? <StyledVerticalDivider /> : dividerShow
+                dividerShow ? <StyledVerticalDivider></StyledVerticalDivider> : dividerShow
             )}
         </DividerWrapper>
     );
