@@ -316,7 +316,7 @@ const ScoreboardFinals = ({ matchId, gameNumber, ui, setMatchId, setGameNumber }
             </head>
 
             <Container ref={scoreBoardRef}>
-                {isLoading && <div>Loading...</div>}
+            {isLoading && <div style={{width: 0, height: 0 }}></div>}
                 {error && <div>Error: {error?.message || "An error occurred"}</div>}
                 <Noise src={noise} alt="noise"></Noise>
                 {!isLoading && !error && matchData && (

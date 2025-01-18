@@ -7,9 +7,11 @@ import ScoreboardFinals from './Scoreboard-finals';
 
 
 const InputForm = styled.div`
+  position:relative;
   width:1920px;
   background-color: #B0FF34;
   color: #1A1C1F;
+  z-index: 2;
 `
 
 const StyledInput = styled.input`
