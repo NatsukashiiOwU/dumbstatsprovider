@@ -1,13 +1,17 @@
 import { styled } from "@linaria/react";
 import { useState } from "react";
 
-const StyledIndex = styled.div`
+type propsType = {
+  mp: boolean;
+}
+
+const StyledIndex = styled.div<propsType>`
   width: 7%;
   height: 100%;
-  background-color: transparent;
+  background-color: ${({mp}) => mp === true ? '#1a1c1f49' : 'transparent'};
   // dotted border
   border: dashed 1px #000000;
-  color: #000000;
+  color: ${({mp}) => mp === true ? '#FFFFFF' : '#000000'};
   display: flex;
   justify-content: center;
   font-family: 'Unbounded', sans-serif;
@@ -19,9 +23,11 @@ const StyledIndex = styled.div`
 
 const Index = ({
     text,
+    mp,
     ...props
   }: {
     text: string;
+    mp: boolean;
     [key: string]: any;
   }) => {
     const [isEditing, setIsEditing] = useState(false);
@@ -50,7 +56,7 @@ const Index = ({
     }
   
     return (
-      <StyledIndex {...props} onDoubleClick={handleDoubleClick} onMouseEnter={placeholderShow} onMouseLeave={placeholderHide}>
+      <StyledIndex {...props} mp={mp} onDoubleClick={handleDoubleClick} onMouseEnter={placeholderShow} onMouseLeave={placeholderHide}>
         {isEditing ? (
           <input
             placeholder="..."

@@ -7,7 +7,7 @@ const StyledTeamName = styled.div`
   font-family: 'Unbounded', sans-serif;
   font-weight: 400;
   font-size: 18px;
-  color: #000000;
+  color: inherit;
   display: flex;
   justify-content: center;
   align-items: center;

@@ -5,7 +5,7 @@ const StyledScore = styled.div`
   width: fit-content;
   min-width: 2em;
   height: 100%;
-  color: #000000;
+  color: inherit;
   font-size: 18px;
   font-family: 'Unbounded', sans-serif;
   font-weight: 400;

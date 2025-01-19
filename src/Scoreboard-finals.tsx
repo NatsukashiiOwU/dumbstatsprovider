@@ -65,6 +65,7 @@ const StatsDesc = styled.div`
   padding-bottom: 0.5em;
   z-index:2;
 `
+
 const TeamWrapper = styled.div`
   width: 100%;
   height: 4.2em;
@@ -75,13 +76,17 @@ const TeamWrapper = styled.div`
   z-index:2;
 `;
 
-const Team = styled.div`
+type wrapperType={
+    mp:boolean;
+}
+
+const Team = styled.div<wrapperType>`
   width: 100%;
   height: 100%;
-    background-color: transparent;
+  background-color: ${({mp}) => mp === true ? '#1a1c1f49' : 'transparent'};
   // dotted border
   border: dashed 1px #000000;
-  color: #000000;
+  color: ${({mp}) => mp === true ? '#FFFFFF' : '#000000'};
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -335,9 +340,9 @@ const ScoreboardFinals = ({ matchId, gameNumber, ui, setMatchId, setGameNumber }
                             </StatsDesc>
 
                             {leftTeams.map((team: TeamData) => (
-                                <TeamWrapper key={team.name}>
-                                    <Index text={gameNumber !== 'OVERALL' ? team.overall_stats.teamPlacement : team.overall_stats.position } />
-                                    <Team>
+                                <TeamWrapper key={team.name} >
+                                    <Index text={gameNumber !== 'OVERALL' ? team.overall_stats.teamPlacement : team.overall_stats.position } mp={Number(team.overall_stats.score) >= 50} />
+                                    <Team mp={Number(team.overall_stats.score) >= 50}>
                                         <TeamName text={team.name} />
                                         <TeamScore>
                                             <Earnings text='' />
@@ -358,8 +363,8 @@ const ScoreboardFinals = ({ matchId, gameNumber, ui, setMatchId, setGameNumber }
 
                             {rightTeams.map((team: TeamData) => (
                                 <TeamWrapper key={team.name}>
-                                    <Index text={gameNumber !== 'OVERALL' ? team.overall_stats.teamPlacement : team.overall_stats.position } />
-                                    <Team>
+                                    <Index text={gameNumber !== 'OVERALL' ? team.overall_stats.teamPlacement : team.overall_stats.position } mp={Number(team.overall_stats.score) >= 50} />
+                                    <Team  mp={Number(team.overall_stats.score) >= 50}>
                                         <TeamName text={team.name} />
                                         <TeamScore>
                                             <Earnings text='' />
