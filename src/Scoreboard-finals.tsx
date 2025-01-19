@@ -141,7 +141,7 @@ const Stage = styled.div`
   font-size: 16px;
   font-family: 'Unbounded', sans-serif;
   display: block;
-  left: 4%;
+  left: 3.7%;
   position: absolute;
   top: 94%;
   display: flex;
@@ -372,7 +372,7 @@ const ScoreboardFinals = ({ matchId, gameNumber, ui, setMatchId, setGameNumber }
                             ))}
                         </TeamsContainer>
                         <Logo />
-                        <Stage>{matchName}</Stage>
+                        <Stage>FINAL DAY</Stage>
                         <WINNER>WINNERS</WINNER>
                     </>
                 )}
