@@ -1,18 +1,20 @@
-import { useEffect, useState } from 'react';
-import { Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom';
-import { styled } from '@linaria/react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import ArchivedScoreboard from './archived/Scoreboard';
-import ArchivedScoreboardFinals from './archived/Scoreboard-finals';
+import { useEffect, useRef, useState } from 'react'
 import Scoreboard from './Scoreboard';
+import { styled } from '@linaria/react';
+import { useLocation } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import ScoreboardS1 from './archived/Scoreboard';
+import ScoreboardS1Finals from './archived/Scoreboard-finals';
+
+
 
 const InputForm = styled.div`
-  position: relative;
-  width: 1920px;
+  position:relative;
+  width:1920px;
   background-color: #B0FF34;
   color: #1A1C1F;
   z-index: 2;
-`;
+`
 
 const StyledInput = styled.input`
   padding: 0;
@@ -22,163 +24,120 @@ const StyledInput = styled.input`
   background-color: #1A1C1F;
   color: white;
   font-family: "Unbounded", sans-serif;
-`;
-
+`
 const StyledSpan = styled.span`
   font-size: 2em;
   font-family: "Unbounded", sans-serif;
   color: #1A1C1F;
-`;
+`
 
 function App() {
-  
-  return (
-    <Routes>
-      <Route path="/" element={<Home />} />
+  const [matchId, setMatchId] = useState('');
+  const [gameNumber, setGameNumber] = useState('OVERALL');
+  const [ui, setUi] = useState(true);
+  const [style, setStyle] = useState('default');
 
-      <Route path="/scoreboard/:matchId" element={<ScoreboardS2Wrapper />} /> {/* s2 style */}
-      <Route path="/scoreboard/:matchId/:gameNumber" element={<ScoreboardS2Wrapper />} /> {/* s2 style */}
+  const location = useLocation();
 
-      <Route path="/archive/scoreboard/:matchId" element={<ScoreboardWrapper />} />
-      <Route path="/archive/scoreboard/:matchId/:gameNumber" element={<ScoreboardWrapper />} />
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    console.log(urlParams)
+    setMatchId(urlParams.get('match') || '');
+    setGameNumber(urlParams.get('game') || 'OVERALL');
+    if (urlParams.has('ui')) {
+      setUi(urlParams.get('ui') === 'true');
+    }
+    setStyle(urlParams.get('style') || 'default');
+    console.log(urlParams, ui, style)
+  }, [location]);
 
-      <Route path="/archive/scoreboard-finals/:matchId" element={<ScoreboardFinalsWrapper />} />
-      <Route path="/archive/scoreboard-finals/:matchId/:gameNumber" element={<ScoreboardFinalsWrapper />} />
-    </Routes>
-  );
+  return <Renderer matchId={matchId} gameNumber={gameNumber} setGameNumber={setGameNumber} setMatchId={setMatchId} ui={ui} style={style} />;
 }
 
-function Home() {
-  const navigate = useNavigate();
-  const [matchUrl, setMatchUrl] = useState('');
+function Renderer({ matchId, gameNumber, setMatchId, setGameNumber, ui, style }: { matchId: string, gameNumber: string, setGameNumber: React.Dispatch<React.SetStateAction<string>>, setMatchId: React.Dispatch<React.SetStateAction<string>>, ui: boolean, style: string }) {
+  const [matchUrl, setMatchUrl] = useState('')
 
   const extractMatchId = (url: string) => {
     const match = url.match(/\/stats\/(\d+)\//);
     return match ? match[1] : '';
   };
 
-  const handleSubmit = () => {
-    const matchId = extractMatchId(matchUrl);
-    if (matchId) {
-      navigate(`/scoreboard/${matchId}?game=OVERALL&ui=true`);
-    }
-  };
-
-  return (
-    <InputForm>
-      <StyledSpan>Enter Overstat URL: </StyledSpan>
-      <StyledInput
-        placeholder="https://overstat.gg/api/stats/9887/summary"
-        value={matchUrl}
-        onChange={(e) => setMatchUrl(e.target.value)}
-        onBlur={handleSubmit}
-      />
-    </InputForm>
-  );
-}
-
-function ScoreboardS2Wrapper() {
-  const { matchId = '', gameNumber = 'OVERALL' } = useParams<{ matchId: string; gameNumber: string }>();
-  const location = useLocation();
-  const navigate = useNavigate();
-  const [ui, setUi] = useState(true);
-  const [finals, setFinals] = useState(false);
-
   useEffect(() => {
-    const urlParams = new URLSearchParams(location.search);
-    setUi(urlParams.get('ui') !== 'false');
-    setFinals(urlParams.get('finals') === 'true');
-  }, [location]);
+    const id = extractMatchId(matchUrl);
+    setMatchId(id);
+  }, [matchUrl]);
 
-  const setMatchId = (newMatchId: string) => {
-    navigate(`/scoreboard/${newMatchId}/${gameNumber}?ui=${ui}&finals=${finals}`);
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setMatchUrl(e.target.value);
   };
 
-  const setGameNumber = (newGameNumber: string) => {
-    navigate(`/scoreboard/${matchId}/${newGameNumber}?ui=${ui}&finals=${finals}`);
-  };
+  const scoreBoardRef = useRef<HTMLDivElement>(null);
+
+  const queryClient = new QueryClient();
+
+  switch(style){
+    case 's1':
+      return (
+        <>
+          {ui && <InputForm>
+            <StyledSpan>{'Enter Overstat URL: '}</StyledSpan>
+            <StyledInput placeholder='https://overstat.gg/api/stats/9887/summary' onBlur={(e) => setMatchUrl(e.target.value)} onChange={handleInputChange} />
+          </InputForm>}
+          <QueryClientProvider client={queryClient}>
+            {
+              matchId &&
+              <>
+                <div ref={scoreBoardRef}>
+                {/* <Scoreboard matchId={matchId} gameNumber={gameNumber} setMatchId={setMatchId} setGameNumber={setGameNumber} ui={ui} /> */}
+                <ScoreboardS1 matchId={matchId} gameNumber={gameNumber} setMatchId={setMatchId} setGameNumber={setGameNumber} ui={ui} />
+                </div>
+              </>
+            }
+          </QueryClientProvider>
+        </>
+      )
+      case 's1final':
+        return (
+          <>
+            {ui && <InputForm>
+              <StyledSpan>{'Enter Overstat URL: '}</StyledSpan>
+              <StyledInput placeholder='https://overstat.gg/api/stats/9887/summary' onBlur={(e) => setMatchUrl(e.target.value)} onChange={handleInputChange} />
+            </InputForm>}
+            <QueryClientProvider client={queryClient}>
+              {
+                matchId &&
+                <>
+                  <div ref={scoreBoardRef}>
+                  {/* <Scoreboard matchId={matchId} gameNumber={gameNumber} setMatchId={setMatchId} setGameNumber={setGameNumber} ui={ui} /> */}
+                  <ScoreboardS1Finals matchId={matchId} gameNumber={gameNumber} setMatchId={setMatchId} setGameNumber={setGameNumber} ui={ui} />
+                  </div>
+                </>
+              }
+            </QueryClientProvider>
+          </>
+        )
+  }
+
 
   return (
-    <QueryClientProvider client={new QueryClient()}>
-      <Scoreboard
-        matchId={matchId || ''}
-        gameNumber={gameNumber}
-        setMatchId={() => { }}
-        setGameNumber={setGameNumber}
-        ui={ui}
-      />
-    </QueryClientProvider>
-  );
+    <>
+      {ui && <InputForm>
+        <StyledSpan>{'Enter Overstat URL: '}</StyledSpan>
+        <StyledInput placeholder='https://overstat.gg/api/stats/9887/summary' onBlur={(e) => setMatchUrl(e.target.value)} onChange={handleInputChange} />
+      </InputForm>}
+      <QueryClientProvider client={queryClient}>
+        {
+          matchId &&
+          <>
+            <div ref={scoreBoardRef}>
+            {/* <Scoreboard matchId={matchId} gameNumber={gameNumber} setMatchId={setMatchId} setGameNumber={setGameNumber} ui={ui} /> */}
+            <Scoreboard matchId={matchId} gameNumber={gameNumber} setMatchId={setMatchId} setGameNumber={setGameNumber} ui={ui} />
+            </div>
+          </>
+        }
+      </QueryClientProvider>
+    </>
+  )
 }
 
-function ScoreboardWrapper() {
-  const { matchId = '', gameNumber = 'OVERALL' } = useParams<{ matchId: string; gameNumber: string }>();
-  const location = useLocation();
-  const navigate = useNavigate();
-  const [ui, setUi] = useState(true);
-  const [finals, setFinals] = useState(false);
-
-  useEffect(() => {
-    const urlParams = new URLSearchParams(location.search);
-    setUi(urlParams.get('ui') !== 'false');
-    setFinals(urlParams.get('finals') === 'true');
-  }, [location]);
-
-  const setMatchId = (newMatchId: string) => {
-    navigate(`/scoreboard/${newMatchId}/${gameNumber}?ui=${ui}&finals=${finals}`);
-  };
-
-  const setGameNumber = (newGameNumber: string) => {
-    navigate(`/scoreboard/${matchId}/${newGameNumber}?ui=${ui}&finals=${finals}`);
-  };
-
-  return (
-    <QueryClientProvider client={new QueryClient()}>
-      <ArchivedScoreboard
-        matchId={matchId || ''}
-        gameNumber={gameNumber}
-        setMatchId={() => { }}
-        setGameNumber={setGameNumber}
-        ui={ui}
-      />
-    </QueryClientProvider>
-  );
-}
-
-function ScoreboardFinalsWrapper() {
-  const { matchId = '', gameNumber = 'OVERALL' } = useParams<{ matchId: string; gameNumber: string }>();
-  const location = useLocation();
-  const navigate = useNavigate();
-  const [ui, setUi] = useState(true);
-  const [finals, setFinals] = useState(false);
-
-  useEffect(() => {
-    const urlParams = new URLSearchParams(location.search);
-    setUi(urlParams.get('ui') !== 'false');
-    setFinals(urlParams.get('finals') === 'true');
-  }, [location]);
-
-  const setMatchId = (newMatchId: string) => {
-    navigate(`/scoreboard/${newMatchId}/${gameNumber}?ui=${ui}&finals=${finals}`);
-  };
-
-  const setGameNumber = (newGameNumber: string) => {
-    navigate(`/scoreboard/${matchId}/${newGameNumber}?ui=${ui}&finals=${finals}`);
-  };
-
-  return (
-    <QueryClientProvider client={new QueryClient()}>
-      <ArchivedScoreboardFinals
-        matchId={matchId || ''}
-        gameNumber={gameNumber}
-        setMatchId={() => { }}
-        setGameNumber={setGameNumber}
-        ui={ui}
-      />
-    </QueryClientProvider>
-  );
-}
-
-
-
-export default App;
+export default App
