@@ -31,20 +31,19 @@ const StyledSpan = styled.span`
 `;
 
 function App() {
-  const basename = import.meta.env.VITE_APP_BASE_URL || '/';
-
+  
   return (
     <Routes>
-      <Route path={`${basename}`} element={<Home />} />
+      <Route path="/" element={<Home />} />
 
-      <Route path={`${basename}scoreboard/:matchId`} element={<ScoreboardS2Wrapper />} /> {/* s2 style */}
-      <Route path={`${basename}scoreboard/:matchId/:gameNumber`} element={<ScoreboardS2Wrapper />} /> {/* s2 style */}
+      <Route path="/scoreboard/:matchId" element={<ScoreboardS2Wrapper />} /> {/* s2 style */}
+      <Route path="/scoreboard/:matchId/:gameNumber" element={<ScoreboardS2Wrapper />} /> {/* s2 style */}
 
-      <Route path={`${basename}archive/scoreboard/:matchId`} element={<ScoreboardWrapper />} />
-      <Route path={`${basename}archive/scoreboard/:matchId/:gameNumber`} element={<ScoreboardWrapper />} />
+      <Route path="/archive/scoreboard/:matchId" element={<ScoreboardWrapper />} />
+      <Route path="/archive/scoreboard/:matchId/:gameNumber" element={<ScoreboardWrapper />} />
 
-      <Route path={`${basename}archive/scoreboard-finals/:matchId`} element={<ScoreboardFinalsWrapper />} />
-      <Route path={`${basename}archive/scoreboard-finals/:matchId/:gameNumber`} element={<ScoreboardFinalsWrapper />} />
+      <Route path="/archive/scoreboard-finals/:matchId" element={<ScoreboardFinalsWrapper />} />
+      <Route path="/archive/scoreboard-finals/:matchId/:gameNumber" element={<ScoreboardFinalsWrapper />} />
     </Routes>
   );
 }
