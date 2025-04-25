@@ -273,7 +273,7 @@ const Scoreboard = ({
   matchId: string;
   gameNumber: string;
   ui: boolean;
-  setGameNumber: (newGameNumber: string) => void;
+  setGameNumber: React.Dispatch<React.SetStateAction<string>>;
   setMatchId: React.Dispatch<React.SetStateAction<string>>;
 }) => {
   const scoreBoardRef = useRef<HTMLDivElement>(null);
