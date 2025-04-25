@@ -88,7 +88,6 @@ function Renderer({ matchId, gameNumber, setMatchId, setGameNumber, ui, style }:
               matchId &&
               <>
                 <div ref={scoreBoardRef}>
-                {/* <Scoreboard matchId={matchId} gameNumber={gameNumber} setMatchId={setMatchId} setGameNumber={setGameNumber} ui={ui} /> */}
                 <ScoreboardS1 matchId={matchId} gameNumber={gameNumber} setMatchId={setMatchId} setGameNumber={setGameNumber} ui={ui} />
                 </div>
               </>
@@ -108,7 +107,6 @@ function Renderer({ matchId, gameNumber, setMatchId, setGameNumber, ui, style }:
                 matchId &&
                 <>
                   <div ref={scoreBoardRef}>
-                  {/* <Scoreboard matchId={matchId} gameNumber={gameNumber} setMatchId={setMatchId} setGameNumber={setGameNumber} ui={ui} /> */}
                   <ScoreboardS1Finals matchId={matchId} gameNumber={gameNumber} setMatchId={setMatchId} setGameNumber={setGameNumber} ui={ui} />
                   </div>
                 </>
@@ -130,7 +128,6 @@ function Renderer({ matchId, gameNumber, setMatchId, setGameNumber, ui, style }:
           matchId &&
           <>
             <div ref={scoreBoardRef}>
-            {/* <Scoreboard matchId={matchId} gameNumber={gameNumber} setMatchId={setMatchId} setGameNumber={setGameNumber} ui={ui} /> */}
             <Scoreboard matchId={matchId} gameNumber={gameNumber} setMatchId={setMatchId} setGameNumber={setGameNumber} ui={ui} />
             </div>
           </>

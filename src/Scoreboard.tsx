@@ -353,12 +353,12 @@ const Scoreboard = ({
   }, [matchName, gameNumber]);
 
   const handleGameChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const newGameNumber = event.target.value;
-    setGameNumber(newGameNumber);
-    // Preserve query parameters (ui)
-    const urlParams = new URLSearchParams(location.search);
-    navigate(`/scoreboard/${matchId}/${newGameNumber}?${urlParams.toString()}`);
-  };
+    if (event.target.value === 'OVERALL') {
+        setGameNumber('OVERALL');
+        return;
+    }
+    setGameNumber(event.target.value);
+};
 
   return (
     <>
