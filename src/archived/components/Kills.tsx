@@ -1,19 +1,19 @@
 import { styled } from "@linaria/react";
 import { useState } from "react";
 
-const StyledTeamName = styled.div`
-  height: 100%;
+const StyledKills = styled.div`
+  width: fit-content;
   min-width: 2em;
-  font-family: 'Unbounded', sans-serif;
-  font-weight: 400;
+  height: 100%;
+  color: #fcfcfc;
   font-size: 18px;
-  color: inherit;
+  font-family: 'Unbounded', sans-serif;
   display: flex;
   justify-content: center;
   align-items: center;
-`
+`;
 
-const TeamName = ({
+const Kills = ({
     text,
     ...props
 }: {
@@ -21,14 +21,14 @@ const TeamName = ({
     [key: string]: any;
 }) => {
     const [isEditing, setIsEditing] = useState(false);
-    const [teamText, setTeamText] = useState(text);
+    const [killsText, setKillsText] = useState(text);
 
     const handleDoubleClick = () => {
         setIsEditing(true);
     };
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setTeamText(event.target.value);
+        setKillsText(event.target.value);
     };
 
     const handleBlur = () => {
@@ -36,21 +36,21 @@ const TeamName = ({
     };
 
     const placeholderShow = () => {
-        if (teamText === '')
-            setTeamText('Enter team name...')
+        if (killsText === '')
+            setKillsText('Enter kills...')
     }
 
     const placeholderHide = () => {
-        if (teamText === 'Enter team name...' || teamText === '')
-            setTeamText('')
+        if (killsText === 'Enter kills...' || killsText === '')
+            setKillsText('')
     }
 
     return (
-        <StyledTeamName {...props} onDoubleClick={handleDoubleClick} onMouseEnter={placeholderShow} onMouseLeave={placeholderHide}>
+        <StyledKills {...props} onDoubleClick={handleDoubleClick} onMouseEnter={placeholderShow} onMouseLeave={placeholderHide}>
             {isEditing ? (
                 <input
                     placeholder="..."
-                    value={teamText}
+                    value={killsText}
                     onChange={handleInputChange}
                     onBlur={handleBlur}
                     style={{
@@ -64,10 +64,10 @@ const TeamName = ({
                     }}
                 />
             ) : (
-                teamText
+                killsText
             )}
-        </StyledTeamName>
+        </StyledKills>
     );
 };
 
-export default TeamName;
+export default Kills;

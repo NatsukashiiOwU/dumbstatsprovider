@@ -5,9 +5,8 @@ const StyledTeamName = styled.div`
   height: 100%;
   min-width: 2em;
   font-family: 'Unbounded', sans-serif;
-  font-weight: 400;
   font-size: 18px;
-  color: inherit;
+  color: #fcfcfc;
   display: flex;
   justify-content: center;
   align-items: center;

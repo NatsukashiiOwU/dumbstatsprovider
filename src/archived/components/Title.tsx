@@ -35,7 +35,6 @@ const StyledTitle = styled.span<TitleProps>`
   font-weight: 900;
   font-size: 48px;
   padding-inline: 0.2em;
-  z-index:2;
 `;
 
 const Title = ({

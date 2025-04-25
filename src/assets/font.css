@@ -1,0 +1,9 @@
+@font-face {
+  font-family: 'Adderley Bold';
+  src: url('assets/fonts/adderleybold.eot');
+  src: url('assets/fonts/adderleybold.eot?#iefix') format('embedded-opentype'),
+    url('assets/fonts/adderleybold.woff2') format('woff2'),
+    url('assets/fonts/adderleybold.woff') format('woff'),
+    url('assets/fonts/adderleybold.ttf') format('truetype'),
+    url('assets/fonts/adderleybold.svg#Adderley Bold') format('svg');
+}
