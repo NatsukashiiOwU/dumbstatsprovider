@@ -31,4 +31,6 @@ jobs:
         uses: skywarth/vite-github-pages-deployer@master
         with: 
           build_path: "./dist" 
+        env:
+          VITE_APP_BASE_URL: "/${{ github.event.repository.name }}/"
         id: deploy_to_pages
