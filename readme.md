@@ -12,8 +12,10 @@ https://natsukashiiowu.github.io/dumbstatsprovider/?mode=teams
 https://natsukashiiowu.github.io/dumbstatsprovider/?ui&matchId=сюда_указывать_цифры_матча_с_оверстата
 
 Параметры:
+
 (указываются после основной ссылки "https://natsukashiiowu.github.io/dumbstatsprovider/" 
 начало параметров обозначается знаком "?" каждый параметр отделяется от прошлого знаком "&")
+
 пример ссылки со всеми параметрами: https://natsukashiiowu.github.io/dumbstatsprovider/?match=10001&game=1&mode=scores&style&s1final&ui
 
 1.  ui - скрывает интерфейс(верхнее меню выбора игры можно вызывать даже с этим параметром если навестись на верхнюю часть таблицы)
