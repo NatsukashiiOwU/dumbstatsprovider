@@ -380,7 +380,7 @@ const Scoreboard = ({
     }, [matchData, gameNumber]);
 
     const currentGame = useMemo(() => {
-        return overallStatsData?.games.length;
+        return overallStatsData?.games?.length || '';
     }, [overallStatsData]);
 
     const [matchTitle, matchSubtitle] = useMemo(() => {
@@ -520,7 +520,7 @@ const Scoreboard = ({
                                 </TeamWrapper>
                             ))}
                         </TeamsContainer>
-                        {mode === 'scores' && <GAMENUMBER mode={mode}>{`AFTER ${currentGame} GAMES`}</GAMENUMBER>}
+                        {mode === 'scores' && overallStatsData?.games?.length>0 && <GAMENUMBER mode={mode}>{`AFTER ${currentGame} GAMES`}</GAMENUMBER>}
                         <GROUP mode={mode}>{group}</GROUP>
                         <Logo mode={mode} />
                     </>
