@@ -1,5 +1,30 @@
 # Инструкция
+
+Ссылки:
+
+Мейн ссылка:
 https://natsukashiiowu.github.io/dumbstatsprovider/
+
+Просмотр команд без скоров(нужно задать команды на оверстате) 
+https://natsukashiiowu.github.io/dumbstatsprovider/?mode=teams
+
+Табла для обса(взять цифры с оверстата и подставить в ссылку):
+https://natsukashiiowu.github.io/dumbstatsprovider/?ui&matchId=сюда_указывать_цифры_матча_с_оверстата
+
+Параметры:
+
+(указываются после основной ссылки "https://natsukashiiowu.github.io/dumbstatsprovider/" 
+начало параметров обозначается знаком "?" каждый параметр отделяется от прошлого знаком "&")
+
+пример ссылки со всеми параметрами: https://natsukashiiowu.github.io/dumbstatsprovider/?match=10001&game=1&mode=scores&style=s1final&ui
+
+1.  ui - скрывает интерфейс(верхнее меню выбора игры можно вызывать даже с этим параметром если навестись на верхнюю часть таблицы)
+2.  match= - значения: айди игры с оверстата - позволяет указать игру которую нужно отобразить 
+3.  mode= - значения: scores || teams - переключает отрисовку таблицы на режим со скорами и с командами
+4.   game= - значения: номер игры цифрой || OVERALL - позволяет отображать результаты конкретной игры
+5.   style= - значения: s1 || s1final || default - меняет стиль отрисовки таблицы
+
+Подробная инструкция ниже:
 
 1. Открываем оверстат
 
@@ -37,7 +62,6 @@ https://natsukashiiowu.github.io/dumbstatsprovider/?match={айди_матча}&
 3.1. Если нужна стата за конкретную игру то прописываем номер в &game={1}
 
 ![image](https://github.com/user-attachments/assets/8aca7eb1-e6c8-4033-a9d6-f6b64c857cc9)
-
 
 4. В обсе добавляем browser source, вставляем ссылку, выставляем 1920x1080
 
