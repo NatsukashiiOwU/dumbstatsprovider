@@ -520,7 +520,11 @@ const Scoreboard = ({
                                 </TeamWrapper>
                             ))}
                         </TeamsContainer>
-                        {mode === 'scores' && overallStatsData?.games?.length>0 && <GAMENUMBER mode={mode}>{`AFTER ${currentGame} GAMES`}</GAMENUMBER>}
+                        {mode === 'scores' && overallStatsData?.games?.length > 0 && gameNumber === "OVERALL" ? (
+                            <GAMENUMBER mode={mode}>{`AFTER ${currentGame} GAMES`}</GAMENUMBER>
+                        ) : (
+                            <GAMENUMBER mode={mode}>{`GAME ${gameNumber}`}</GAMENUMBER>
+                        )}
                         <GROUP mode={mode}>{group}</GROUP>
                         <Logo mode={mode} />
                     </>
