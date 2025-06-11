@@ -2,8 +2,6 @@ import { styled } from '@linaria/react';
 import { StyledInput, StyledSpan } from './App';
 import useWebSocket, { ReadyState } from 'react-use-websocket';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import ReactJson from '@microlink/react-json-view';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
 import LegendBanManager from './components/LegendBanManager';
 
 const StyledContainer = styled.div`
