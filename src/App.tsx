@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import Scoreboard from './Scoreboard';
 import { styled } from '@linaria/react';
 import { useLocation } from 'react-router-dom';
@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-quer
 import ScoreboardS1 from './archived/Scoreboard';
 import ScoreboardS1Finals from './archived/Scoreboard-finals';
 import { css } from '@linaria/core';
+import Host from './Host';
 
 const InputForm = styled.div`
     position: relative;
@@ -60,7 +61,7 @@ const HiddenHeader = styled.div`
     }
 `;
 
-const StyledSelect = styled.select`
+export const StyledSelect = styled.select`
     width: 200px;
     padding: 10px;
     font-size: 16px;
@@ -69,7 +70,7 @@ const StyledSelect = styled.select`
     z-index: 2;
 `;
 
-const StyledInput = styled.input`
+export const StyledInput = styled.input`
     padding: 0;
     width: auto;
     font-size: 2em;
@@ -79,64 +80,53 @@ const StyledInput = styled.input`
     font-family: 'Unbounded', sans-serif;
 `;
 
-const StyledSpan = styled.span`
+export const StyledSpan = styled.span`
     font-size: 2em;
     font-family: 'Unbounded', sans-serif;
     color: #1a1c1f;
 `;
 
 function App() {
+    const location = useLocation();
+    const urlParams = new URLSearchParams(location.search);
+    const host = urlParams.get('host') === '';
+
+    console.log(urlParams.get('host'),host)
+
+    if (host) {
+        return <Hoster />;
+    }
+
+    return <Renderer />;
+}
+
+function Hoster() {
+
+    return (
+        <Host></Host>
+    );
+}
+
+
+function Renderer() {
+    const location = useLocation();
     const [matchId, setMatchId] = useState('');
     const [gameNumber, setGameNumber] = useState('OVERALL');
     const [ui, setUi] = useState(true);
     const [style, setStyle] = useState('default');
     const [mode, setMode] = useState<'scores' | 'teams'>('scores');
+    const [matchUrl, setMatchUrl] = useState('');
+    const queryClient = new QueryClient();
 
-    const location = useLocation();
-
+    // Initialize from URL parameters
     useEffect(() => {
         const urlParams = new URLSearchParams(location.search);
         setMatchId(urlParams.get('match') || '');
         setGameNumber(urlParams.get('game') || 'OVERALL');
-        if (urlParams.has('ui')) {
-            setUi(urlParams.get('ui') === 'true');
-        }
+        setUi(urlParams.get('ui') !== '');
         setStyle(urlParams.get('style') || 'default');
         setMode((urlParams.get('mode') as 'scores' | 'teams') || 'scores');
     }, [location]);
-
-    return (
-        <Renderer
-            matchId={matchId}
-            gameNumber={gameNumber}
-            setGameNumber={setGameNumber}
-            setMatchId={setMatchId}
-            ui={ui}
-            style={style}
-            mode={mode}
-        />
-    );
-}
-
-function Renderer({
-    matchId,
-    gameNumber,
-    setMatchId,
-    setGameNumber,
-    ui,
-    style,
-    mode,
-}: {
-    matchId: string;
-    gameNumber: string;
-    setGameNumber: React.Dispatch<React.SetStateAction<string>>;
-    setMatchId: React.Dispatch<React.SetStateAction<string>>;
-    ui: boolean;
-    style: string;
-    mode: 'scores' | 'teams';
-}) {
-    const [matchUrl, setMatchUrl] = useState('');
-    const queryClient = new QueryClient();
 
     const matchList = useQuery(
         {
