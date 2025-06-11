@@ -291,14 +291,6 @@ const LiveDebugger: React.FC<LiveDebuggerProps> = ({ defaultUrl = '', socketUrl 
 
                 <div className="sender-controls">
                     <button onClick={handleSendMessage}>Send Message 📤</button>
-                    <CopyToClipboard text={customMessage}>
-                        <button>Copy to Clipboard 📋</button>
-                    </CopyToClipboard>
-                    {lastSentMessage && (
-                        <CopyToClipboard text={lastSentMessage}>
-                            <button>Copy Last Sent 📨</button>
-                        </CopyToClipboard>
-                    )}
                 </div>
             </div>
 
