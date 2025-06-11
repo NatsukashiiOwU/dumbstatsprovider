@@ -2,7 +2,7 @@ import { styled } from '@linaria/react';
 import { StyledInput, StyledSpan } from './App';
 import useWebSocket, { ReadyState } from 'react-use-websocket';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import ReactJson from 'react-json-view';
+import ReactJson from '@microlink/react-json-view';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import LegendBanManager from './components/LegendBanManager';
 
@@ -317,17 +317,18 @@ const LiveDebugger: React.FC<LiveDebuggerProps> = ({ defaultUrl = '', socketUrl 
                                     <span className="direction">{msg.direction}</span>
                                     {msg.error && <span className="error-badge">ERROR</span>}
                                 </div>
-                                {typeof msg.data === 'object' ? (
-                                    <ReactJson
-                                        src={msg.data}
-                                        theme="monokai"
-                                        collapsed={1}
-                                        displayDataTypes={false}
-                                        enableClipboard={false}
-                                    />
-                                ) : (
-                                    <pre className="raw-message">{msg.data}</pre>
-                                )}
+
+                                <pre
+                                    style={{
+                                        background: '#2d2d2d',
+                                        padding: '10px',
+                                        borderRadius: '4px',
+                                        overflowX: 'auto',
+                                    }}
+                                >
+                                    {JSON.stringify(msg.data, null, 2)}
+                                </pre>
+
                                 {msg.error && <div className="error-message">{msg.error}</div>}
                             </div>
                         ))
