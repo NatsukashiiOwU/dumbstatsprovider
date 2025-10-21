@@ -25,12 +25,20 @@ jobs:
       name: demo
       url: ${{ steps.deploy_to_pages.outputs.github_pages_url }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Vite Github Pages Deployer
-        uses: skywarth/vite-github-pages-deployer@master
-        with: 
-          build_path: "./dist" 
-        env:
-          VITE_APP_BASE_URL: "/${{ github.event.repository.name }}/"
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Clean node_modules and package-lock.json
+      run: | 
+        rm -rf node_modules package-lock.json
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Vite Github Pages Deployer
+      uses: skywarth/vite-github-pages-deployer@master
+      with:
+        build_path: "./dist"
+      env:
+        VITE_APP_BASE_URL: "/${{ github.event.repository.name }}/"
         id: deploy_to_pages
