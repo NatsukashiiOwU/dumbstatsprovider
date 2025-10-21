@@ -90,25 +90,24 @@ function App() {
     const location = useLocation();
     const urlParams = new URLSearchParams(location.search);
     const host = urlParams.get('host') === '';
-
-    console.log(urlParams.get('host'),host)
+    const organizer = urlParams.get('organizer') || '13yog';
 
     if (host) {
-        return <Hoster />;
+        return <Hoster organizer={organizer} />;
     }
 
-    return <Renderer />;
+    return <Renderer organizer={organizer} />;
 }
 
-function Hoster() {
+function Hoster({ organizer }: { organizer: string | null }) {
 
     return (
-        <Host></Host>
+        <Host organizer={organizer} />
     );
 }
 
 
-function Renderer() {
+function Renderer({ organizer }: { organizer: string | null }) {
     const location = useLocation();
     const [matchId, setMatchId] = useState('');
     const [gameNumber, setGameNumber] = useState('OVERALL');
@@ -131,7 +130,7 @@ function Renderer() {
     const matchList = useQuery(
         {
             queryKey: ['list'],
-            queryFn: () => fetch(`https://overstat.gg/api/settings/match_list/13yog`).then((res) => res.json()),
+            queryFn: () => fetch(`https://overstat.gg/api/settings/match_list/${organizer}`).then((res) => res.json()),
         },
         queryClient
     );

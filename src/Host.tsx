@@ -3,6 +3,7 @@ import { StyledInput, StyledSpan } from './App';
 import useWebSocket, { ReadyState } from 'react-use-websocket';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import LegendBanManager from './components/LegendBanManager';
+import DraftsUploader from './components/DraftsUploader';
 
 const StyledContainer = styled.div`
     background-color: #210f0f;
@@ -120,7 +121,7 @@ const StyledRow = styled.div`
     gap: 1em;
 `;
 
-export const convertGameUrlToSiteUrl = (gameUrl: string): string => {
+export const convertGameUrlToSiteUrl = (organizer: string, gameUrl: string): string => {
     try {
         const url = new URL(gameUrl);
 
@@ -130,7 +131,7 @@ export const convertGameUrlToSiteUrl = (gameUrl: string): string => {
             const [, , , sessionId, userId] = pathParts;
 
             // Convert to site URL (read endpoint)
-            return `wss://${url.host}/api/live/read/13yog/${userId}/${sessionId}`;
+            return `wss://${url.host}/api/live/read/${organizer}/${userId}/${sessionId}`;
         }
 
         // If it's already a site URL or invalid, return as-is
@@ -156,7 +157,7 @@ const LiveDebugger: React.FC<LiveDebuggerProps> = ({ defaultUrl = '', socketUrl 
     const [customMessage, setCustomMessage] = useState('{"event":"ping","data":{}}');
     const [messageFormat, setMessageFormat] = useState<'json' | 'text'>('json');
     const [lastSentMessage, setLastSentMessage] = useState<string | null>(null);
-    const historyEndRef = useRef<HTMLDivElement>(null);
+    const historyStartRef = useRef<HTMLDivElement>(null);
 
     // Save URL to localStorage whenever it changes
     useEffect(() => {
@@ -199,7 +200,7 @@ const LiveDebugger: React.FC<LiveDebuggerProps> = ({ defaultUrl = '', socketUrl 
 
     // Auto-scroll to bottom
     useEffect(() => {
-        historyEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+        historyStartRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [messageHistory]);
 
     // Send custom message
@@ -242,10 +243,10 @@ const LiveDebugger: React.FC<LiveDebuggerProps> = ({ defaultUrl = '', socketUrl 
                         {readyState === 0
                             ? 'CONNECTING'
                             : readyState === 1
-                            ? 'OPEN'
-                            : readyState === 2
-                            ? 'CLOSING'
-                            : 'CLOSED'}
+                                ? 'OPEN'
+                                : readyState === 2
+                                    ? 'CLOSING'
+                                    : 'CLOSED'}
                         )
                     </span>
                     <div className="controls">
@@ -297,6 +298,8 @@ const LiveDebugger: React.FC<LiveDebuggerProps> = ({ defaultUrl = '', socketUrl 
             <div className="message-viewer">
                 <h3>Message History (Newest First)</h3>
                 <div className="message-list">
+                    <div ref={historyStartRef} />
+
                     {messageHistory.length === 0 ? (
                         <div className="empty-state">No messages exchanged yet...</div>
                     ) : (
@@ -323,20 +326,19 @@ const LiveDebugger: React.FC<LiveDebuggerProps> = ({ defaultUrl = '', socketUrl 
                             </div>
                         ))
                     )}
-                    <div ref={historyEndRef} />
                 </div>
             </div>
         </div>
     );
 };
 
-const Host = () => {
-    const [activeTab, setActiveTab] = useState<'messages' | 'bans'>('bans');
+const Host = ({ organizer }: { organizer: string }) => {
+    const [activeTab, setActiveTab] = useState<'messages' | 'bans' | 'drafts'>('bans');
 
     // Initialize with converted URL if localStorage has a game URL
     const [socketUrl, setSocketUrl] = useState(() => {
         const savedUrl = localStorage.getItem(WS_URL_KEY);
-        return savedUrl ? convertGameUrlToSiteUrl(savedUrl) : '';
+        return savedUrl ? convertGameUrlToSiteUrl(organizer, savedUrl) : '';
     });
 
     const [inputUrl, setInputUrl] = useState(() => {
@@ -348,7 +350,7 @@ const Host = () => {
     useEffect(() => {
         if (inputUrl) {
             localStorage.setItem(WS_URL_KEY, inputUrl);
-            setSocketUrl(convertGameUrlToSiteUrl(inputUrl));
+            setSocketUrl(convertGameUrlToSiteUrl(organizer, inputUrl));
         }
     }, [inputUrl]);
 
@@ -364,6 +366,13 @@ const Host = () => {
                         onClick={() => setActiveTab('messages')}
                     >
                         Message Debugger
+                    </button>
+                    <button
+                        style={{ opacity: 0.3 }}
+                        className={activeTab === 'drafts' ? 'active' : ''}
+                        onClick={() => setActiveTab('drafts')}
+                    >
+                        Drafts uploader
                     </button>
                 </StyledRow>
 
@@ -401,7 +410,7 @@ const Host = () => {
 
                 {activeTab === 'messages' ? (
                     <LiveDebugger socketUrl={socketUrl} />
-                ) : (
+                ) : activeTab === 'drafts' ? (<DraftsUploader socketUrl={socketUrl} organizer={organizer} />) : (
                     <LegendBanManager socketUrl={socketUrl} />
                 )}
             </StyledContainer>
