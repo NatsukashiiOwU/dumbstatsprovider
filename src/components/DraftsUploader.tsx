@@ -40,7 +40,7 @@ const getDropNumber = (dropName: string) => {
     "High Desert": 26, // not exist
     "N. 82": 27, // not exist
   }
-  return map[dropName];
+  return map[dropName as keyof typeof map];
 }
 
 const DraftsUploader: React.FC<DraftsUploaderProps> = ({ socketUrl, organizer }) => {
@@ -49,11 +49,10 @@ const DraftsUploader: React.FC<DraftsUploaderProps> = ({ socketUrl, organizer })
   const [statusMessage, setStatusMessage] = useState('');
   const queryClient = new QueryClient();
   const [matchId, setMatchId] = useState('');
-  console.log("🚀 ~ DraftsUploader ~ matchId:", matchId)
   const [selectedGame, setSelectedGame] = useState<number>();
-  const [fetchedMaps, setFetchedMaps] = useState();
-  const [teams, setTeams] = useState();
-  const [selectedMap, setSelectedMap] = useState<{ game: number; map: string; }>({});
+  const [fetchedMaps, setFetchedMaps] = useState<any>();
+  const [teams, setTeams] = useState<any>();
+  const [selectedMap, setSelectedMap] = useState<{ game: number; map: string; }|null>(null);
 
   const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl, {
     shouldReconnect: () => true,
@@ -89,8 +88,8 @@ const DraftsUploader: React.FC<DraftsUploaderProps> = ({ socketUrl, organizer })
 
   const draftsQuery = useQuery(
     {
-      queryKey: ['drafts-list', matchId, selectedMap.game],
-      queryFn: () => fetch(`https://overstat.gg/api/drops/${matchId}/${selectedMap.map}/${selectedMap.game}`).then((res) => res.json()),
+      queryKey: ['drafts-list', matchId, selectedMap?.game],
+      queryFn: () => fetch(`https://overstat.gg/api/drops/${matchId}/${selectedMap?.map}/${selectedMap?.game}`).then((res) => res.json()),
       staleTime: 0,
     },
     queryClient
@@ -103,12 +102,9 @@ const applyDrafts = () => {
   
   const orderedTeams = teamsQuery.data; // [{name: "A", teamId: 2}, ...]
   const draftData = draftsQuery.data;   // {a: [{drop: "River"}], b: [{drop: "Labs"}], ...}
-  
-  console.log({orderedTeams});
-  console.log("🚀 ~ applyDrafts ~ draftData:", draftData);
 
   // Create the final teams array with drops
-  const teamsWithDrops = orderedTeams.map(team => {
+  const teamsWithDrops = orderedTeams.map((team: {name: string; teamId: number }) => {
     const lowercaseName = team.name.toLowerCase();
     const dropData = draftData[team.name];
     console.log("🚀 ~ applyDrafts ~ dropData:", dropData)
@@ -120,13 +116,12 @@ const applyDrafts = () => {
     };
   });
 
-  console.log("🚀 ~ teamsWithDrops:", teamsWithDrops);
   setTeams(teamsWithDrops);
 
   if(!teamsWithDrops) return;
 
   // Send commands for each team
-  teamsWithDrops.forEach((team, index) => {
+  teamsWithDrops.forEach((team: {drop: string, teamId: number, name: string}, index:number) => {
     if (team.drop !== 'Unknown') {
       setTimeout(()=> {
       sendMessage(JSON.stringify({
@@ -152,7 +147,7 @@ const applyDrafts = () => {
 
   useEffect(() => {
     if (!matchQuery.isSuccess) return;
-    setSelectedMap(matchQuery?.data?.drops?.maps.find((i) => i.game == selectedGame));
+    setSelectedMap(matchQuery?.data?.drops?.maps.find((i: any) => i.game == selectedGame));
   }, [selectedGame])
 
   useEffect(() => {
@@ -185,7 +180,7 @@ const applyDrafts = () => {
 
         {matchQuery.isSuccess && (
           <>
-            <StyledSelect value={selectedGame} onChange={(e) => setSelectedGame(e.target.value)}>
+            <StyledSelect value={selectedGame} onChange={(e) => setSelectedGame(Number(e.target.value))}>
               {fetchedMaps?.map(
                 (i: { game: number; map: string; }) => (
                   <option key={i.game} value={i.game}>
@@ -224,7 +219,7 @@ const applyDrafts = () => {
           ) : null}
         </StatusArea>
       </Header>
-      {teams?.map((t) => <>{t.name}: {t.drop}@{getDropNumber(t.drop)} <br /></>)}
+      {teams?.map((t:any) => <>{t.name}: {t.drop}@{getDropNumber(t.drop)} <br /></>)}
     </Container>
   );
 };

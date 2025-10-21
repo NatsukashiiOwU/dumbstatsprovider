@@ -99,7 +99,7 @@ function App() {
     return <Renderer organizer={organizer} />;
 }
 
-function Hoster({ organizer }: { organizer: string | null }) {
+function Hoster({ organizer }: { organizer: string }) {
 
     return (
         <Host organizer={organizer} />
