@@ -28,15 +28,16 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '18'
-          cache: 'npm'
+          cache: 'yarn'  # Change to yarn caching
           
-      - name: Install dependencies
-        run: npm install --no-optional
-        
+      - name: Install Yarn (if needed)
+        run: npm install -g yarn
+          
       - name: Vite Github Pages Deployer
         uses: skywarth/vite-github-pages-deployer@master
         with: 
-          build_path: "./dist" 
+          build_path: "./dist"
+          package_manager: "yarn"  # Add this line to specify yarn
         env:
           VITE_APP_BASE_URL: "/${{ github.event.repository.name }}/"
         id: deploy_to_pages
