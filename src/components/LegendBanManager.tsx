@@ -15,6 +15,14 @@ const LegendBanManager: React.FC<LegendBanManagerProps> = ({ socketUrl }) => {
   const [statusMessage, setStatusMessage] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
 const pendingBansRef = useRef<string[]>([]);
+const filterLegends = ["random","dummie","bangalore", "bloodhound", "caustic", "gibraltar", "lifeline", "mirage", "pathfinder", "wraith", "octane", "wattson", "crypto", "revenant", "loba"]
+
+  // Get the references of legends that are NOT in filterLegends
+  const otherLegendReferences = useMemo(() => {
+    return allLegends
+      .filter(legend => !filterLegends.includes(legend.reference.toLowerCase()))
+      .map(legend => legend.reference);
+  }, [allLegends]);
 
 
   const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl, {
@@ -156,6 +164,10 @@ const applyBans = () => {
                         <RefreshButton onClick={fetchBanStatus} disabled={isLoading}>
                             Refresh
                         </RefreshButton>
+                        
+                        <ResetButton onClick={()=> setSelectedBans(otherLegendReferences)} disabled={isLoading}>
+                            Set all legends until 5 season
+                        </ResetButton>
                     </ButtonGroup>
                 </Controls>
 
