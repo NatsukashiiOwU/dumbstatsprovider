@@ -141,6 +141,9 @@ function Renderer({ organizer }: { organizer: string | null }) {
     };
 
     useEffect(() => {
+        const urlParams = new URLSearchParams(location.search);
+        if (urlParams.get('match')) return;
+        
         const id = extractMatchId(matchUrl);
         setMatchId(id);
     }, [matchUrl]);
