@@ -491,22 +491,18 @@ const Scoreboard = ({
                             {rightTeams.map((team: TeamData, index: number) => (
                                 <TeamWrapper key={team.name}>
                                     <Index
+                                        text={gameNumber !== 'OVERALL' ? `${index + 1}` : team.overall_stats.position}
                                         mode={mode}
-                                        text={
-                                            gameNumber !== 'OVERALL'
-                                                ? `${leftTeams.length + index + 1}`
-                                                : team.overall_stats.position
-                                        }
                                         mp={
-                                            settings.scoring.useMatchPoint &&
-                                            Number(team.overall_stats.score) >= settings.scoring.matchPointThreshold
+                                            settings?.scoring?.useMatchPoint &&
+                                            Number(team.overall_stats.score) >= settings?.scoring?.matchPointThreshold
                                         }
                                     />
                                     <Team
                                         mode={mode}
                                         mp={
-                                            settings.scoring.useMatchPoint &&
-                                            Number(team.overall_stats.score) >= settings.scoring.matchPointThreshold
+                                            settings?.scoring?.useMatchPoint &&
+                                            Number(team.overall_stats.score) >= settings?.scoring?.matchPointThreshold
                                         }
                                     >
                                         <TeamName text={team.name} />
