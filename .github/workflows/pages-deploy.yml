@@ -17,6 +17,9 @@ concurrency:
   group: "pages"
   cancel-in-progress: false
 
+env:
+  API_BASE_URL: ${{ secrets.API_BASE_URL }}
+
 jobs:
   # Build job
   build:
