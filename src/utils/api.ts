@@ -3,8 +3,7 @@
  * Handles CORS configuration and error handling
  */
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-
+const API_BASE_URL = 'http://109.172.54.11:3000/api';
 interface FetchOptions extends RequestInit {
     timeout?: number;
 }
