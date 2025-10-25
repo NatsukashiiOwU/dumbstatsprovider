@@ -3,7 +3,7 @@
  * Handles CORS configuration and error handling
  */
 
-const API_BASE_URL = 'http://109.172.54.11:3000/api';
+const API_BASE_URL = 'https://dumbstatsprovider.ddns.net/api';
 interface FetchOptions extends RequestInit {
     timeout?: number;
 }
