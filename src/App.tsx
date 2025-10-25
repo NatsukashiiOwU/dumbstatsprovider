@@ -37,7 +37,7 @@ const HiddenHeader = styled.div`
     color: white;
     text-align: center;
     transition: transform 0.3s ease;
-    z-index: 10;
+    z-index: 1000;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -112,6 +112,7 @@ function Renderer({ organizer }: { organizer: string | null }) {
     const [matchId, setMatchId] = useState('');
     const [gameNumber, setGameNumber] = useState('OVERALL');
     const [ui, setUi] = useState(true);
+    const [isLive, setIsLive] = useState(false);
     const [style, setStyle] = useState('default');
     const [mode, setMode] = useState<'scores' | 'teams'>('scores');
     const [matchUrl, setMatchUrl] = useState('');
@@ -123,6 +124,7 @@ function Renderer({ organizer }: { organizer: string | null }) {
         setMatchId(urlParams.get('match') || '');
         setGameNumber(urlParams.get('game') || 'OVERALL');
         setUi(urlParams.get('ui') !== '');
+        setIsLive(urlParams.has('live'));
         setStyle(urlParams.get('style') || 'default');
         setMode((urlParams.get('mode') as 'scores' | 'teams') || 'scores');
     }, [location]);
@@ -280,6 +282,7 @@ function Renderer({ organizer }: { organizer: string | null }) {
                                 setGameNumber={setGameNumber}
                                 ui={ui}
                                 mode={mode}
+                                isLive={isLive}
                             />
                         </div>
                     </>

@@ -10,15 +10,12 @@ import Kills from './components/Kills';
 import Score from './components/Score';
 import VerticalDivider from './components/Divider';
 import background from './assets/mask_group.png';
-import backgroundVid from './assets/statsgif1.webm';
 import backgroundTeams from './assets/mask_group_teams.png';
-import logos from './assets/Sponsors.png';
+import logos from './assets/logos.png';
 import logosTeams from './assets/logos_black.png';
-import RCC from './assets/RCC.png';
 import overlay from './assets/texture-overlay.png';
 import noise from './assets/grunge_texture.png';
 import testImage from './assets/test_image.png';
-import { getMatch, getOverallStats, getMatchSettings, getGameStats } from './utils/api';
 
 const TestImage = styled.div`
     position: absolute;
@@ -36,7 +33,7 @@ const Container = styled.div<{ mode: 'scores' | 'teams' }>`
     position: relative;
     width: 1920px;
     height: 1080px;
-    background: ${(props) => (props.mode === 'scores' ? `#000000` : `#1A1C1F`)};
+    background: ${(props) => (props.mode === 'scores' ? `#d11f2d` : `#1A1C1F`)};
     background-blend-mode: overlay;
 `;
 
@@ -47,19 +44,10 @@ const BG = styled.div<{ mode: 'scores' | 'teams' }>`
     width: 200%;
     height: 200%;
     background-clip: padding-box;
-    /* background-image: ${(props) => (props.mode === 'scores' ? `url(${backgroundVid})` : `url(${backgroundTeams})`)}; */
+    background-image: ${(props) => (props.mode === 'scores' ? `url(${background})` : `url(${backgroundTeams})`)};
     opacity: 1;
     z-index: 0;
 `;
-
-const StyledVid = styled.video`
-    position: absolute;
-    top: 0%;
-    left: 0%;
-    width: 100%;
-    height: 100%;
-    filter: brightness(500%) blur(5px);
-`
 
 const Noise = styled.img`
     position: absolute;
@@ -92,10 +80,10 @@ const TeamsContainer = styled.div<{ position: 'left' | 'right' }>`
 
 const StatsDesc = styled.div`
     color: #fcfcfc;
-    font-size: 10px;
-    font-family: 'Involve', sans-serif;
-    display: flex;
-    left: 0.5%;
+    font-size: 16px;
+    font-family: 'Unbounded', sans-serif;
+    display: block;
+    left: 85.5%;
     position: relative;
     display: flex;
     flex-direction: row;
@@ -133,8 +121,7 @@ const Team = styled.div<wrapperType>`
     z-index: 2;
 
     /* Conditional background and text color */
-    background-color: ${(props) => (props.mode === 'teams' ? '#1A1C1F' : props.mp ? '#1A1C1F' : '#400202')};
-    border: 2px solid #FF0000;
+    background-color: ${(props) => (props.mode === 'teams' ? '#1A1C1F' : props.mp ? '#1A1C1F' : '#D11F2D')};
     color: ${(props) => (props.mode === 'teams' ? '#FFFFFF' : props.mp ? '#FFFFFF' : '#FCFCFC')};
 `;
 
@@ -148,20 +135,20 @@ const TeamScore = styled.div`
     z-index: 2;
 `;
 
-const Logo = styled.div<{ mode: "scores" | "teams" }>`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-  img {
-    height: 100%;
-    width: 100%;
-    object-fit: contain;
-    background-color: transparent;
-    pointer-events: none;
-  }
+const Logo = styled.div<{ mode: 'scores' | 'teams' }>`
+    position: absolute;
+    width: 239px;
+    height: 86.6px;
+    background: ${(props) => (props.mode === 'scores' ? `url(${logos})` : `url(${logosTeams})`)};
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    margin: 0 auto;
+    bottom: 3.5%;
+    left: 50%;
+    transform: translateX(-50.12%);
+    z-index: 4;
+    opacity: 1;
 `;
 
 const ExportButton = styled.button`
@@ -215,61 +202,69 @@ const WINNER = styled.div`
     z-index: 2;
 `;
 
-const TitleBlock = styled.div`
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: minmax(0, 1fr);
-  justify-items: center;
-  align-items: center;
-  height: 120px; /* parent defines bounds for row fr sizing */
-  padding-inline: 4em;
-  overflow: hidden;
-`;
-
 const TITLE = styled.div`
     color: #f6f5f5;
     font-size: 113px;
     font-family: 'Adderley', 'Unbounded', sans-serif;
     font-weight: 800;
+    display: block;
+    left: 37%;
+    position: absolute;
     letter-spacing: 1.35%;
+    width: 100%;
+    top: 3.1%;
     z-index: 2;
 `;
 
 const XVSX = styled.div<{ mode: 'scores' | 'teams' }>`
     color: ${(props) => (props.mode === 'scores' ? '#f6f5f5' : '#1a1c1f')};
-    font-size: 42px;
-    font-family: 'Involve', 'Unbounded', sans-serif;
+    font-size: 56px;
+    font-family: 'Adderley', 'Unbounded', sans-serif;
     font-weight: 800;
+    display: block;
+    right: 66.4%;
+    position: absolute;
     letter-spacing: 1.35%;
+    top: 5.9%;
     z-index: 2;
 `;
 
 const RESULTS = styled.div<{ mode: 'scores' | 'teams' }>`
     color: ${(props) => (props.mode === 'scores' ? '#f6f5f5' : '#1a1c1f')};
-    font-size: 42px;
-    font-family: 'Involve', 'Unbounded', sans-serif;
+    font-size: 56px;
+    font-family: 'Adderley', 'Unbounded', sans-serif;
     font-weight: 800;
+    left: 66.4%;
+    position: absolute;
     letter-spacing: 1.35%;
+    top: 5.9%;
     z-index: 2;
 `;
 
 const GROUP = styled.div<{ mode: 'scores' | 'teams' }>`
     color: ${(props) => (props.mode === 'scores' ? '#f6f5f5' : '#1a1c1f')};
-    font-size: 42px;
-    font-family: 'Involve', 'Unbounded', sans-serif;
+    font-size: 56px;
+    font-family: 'Adderley', 'Unbounded', sans-serif;
     font-weight: 800;
     display: block;
+    right: 66.4%;
     // right: 85%;
+    position: absolute;
     letter-spacing: 1.35%;
+    bottom: 5.9%;
     z-index: 2;
 `;
 
 const GAMENUMBER = styled.div<{ mode: 'scores' | 'teams' }>`
     color: ${(props) => (props.mode === 'scores' ? '#f6f5f5' : '#1a1c1f')};
-    font-size: 42px;
-    font-family: 'Involve', 'Unbounded', sans-serif;
+    font-size: 56px;
+    font-family: 'Adderley', 'Unbounded', sans-serif;
     font-weight: 800;
+    left: 66.4%;
+    // left: 79.5%;
+    position: absolute;
     letter-spacing: 1.35%;
+    bottom: 5.9%;
     z-index: 2;
 `;
 
@@ -303,7 +298,6 @@ const Scoreboard = ({
     setMatchId,
     setGameNumber,
     mode,
-    isLive
 }: {
     matchId: string;
     gameNumber: string;
@@ -311,7 +305,6 @@ const Scoreboard = ({
     setGameNumber: React.Dispatch<React.SetStateAction<string>>;
     setMatchId: React.Dispatch<React.SetStateAction<string>>;
     mode: 'scores' | 'teams';
-    isLive?: boolean;
 }) => {
     const scoreBoardRef = useRef<HTMLDivElement>(null);
     const navigate = useNavigate();
@@ -323,32 +316,32 @@ const Scoreboard = ({
             queries: [
                 {
                     queryKey: ['match', matchId],
-                    queryFn: () => getMatch(matchId),
+                    queryFn: () => fetch(`https://overstat.gg/api/match/${matchId}`).then((res) => res.json()),
                 },
                 {
                     queryKey: ['overallStats', matchId],
-                    queryFn: () => getOverallStats(matchId),
+                    queryFn: () => fetch(`https://overstat.gg/api/stats/${matchId}/overall`).then((res) => res.json()),
                 },
                 {
                     queryKey: ['settings', matchId],
-                    queryFn: () => getMatchSettings(matchId),
+                    queryFn: () => fetch(`	https://overstat.gg/api/settings/match/${matchId}`).then((res) => res.json()),
                 },
                 {
                     queryKey: ['gameStats', matchId, gameNumber],
-                    queryFn: () => getGameStats(matchId, gameNumber),
+                    queryFn: () =>
+                        fetch(`https://overstat.gg/api/stats/${matchId}/${gameNumber}`).then((res) => res.json()),
                 },
             ],
         },
         queryClient
     );
 
-
     const isLoading = results.some((result) => result.isLoading);
     const error = results.find((result) => result.error)?.error;
 
     useEffect(() => {
         if (error) {
-            console.error('[SCOREBOARD-ERROR] Error fetching data:', error);
+            console.error('Error fetching data:', error);
         }
     }, [error]);
 
@@ -374,17 +367,16 @@ const Scoreboard = ({
     }, [teams, gameNumber]);
 
     const matchName = useMemo(() => {
-
-        console.log("🚀 ~ Scoreboard ~ matchData:", matchData)
         return (
-            matchData?.eventId?.toUpperCase()
-                .replace(/RCC/g, '')
-                .replace(/LOBBY\s[a-zA-Z0-9]+/, '') || 'Match Name'
+            matchData?.eventId
+                .toUpperCase()
+                .replace(/RD X 13YOG LEAGUE SEASON 2/g, '')
+                .replace(/GROUP\s[a-zA-Z0-9]+/, '') || 'Match Name'
         );
     }, [matchData, gameNumber]);
 
     const group = useMemo(() => {
-        return matchData?.eventId?.toUpperCase().match(/LOBBY\s[a-zA-Z0-9]+/);
+        return matchData?.eventId.toUpperCase().match(/GROUP\s[a-zA-Z0-9]+/);
     }, [matchData, gameNumber]);
 
     const currentGame = useMemo(() => {
@@ -405,38 +397,37 @@ const Scoreboard = ({
 
     return (
         <>
+            <head>
+                <style>
+                    @import
+                    url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&family=Unbounded:wght@200..900&display=swap');
+                </style>
+            </head>
+
             <Container mode={mode} ref={scoreBoardRef}>
                 {isLoading && <div style={{ width: 0, height: 0 }}></div>}
                 {error && <div>Error: {error?.message || 'An error occurred'}</div>}
                 {/* <TestImage /> */}
                 {!isLoading && !error && matchData && (
                     <>
-                        {/* <Noise src={noise} alt="noise" />
-                        <Overlay src={overlay} alt="overlay" /> */}
+                        <Noise src={noise} alt="noise" />
+                        <Overlay src={overlay} alt="overlay" />
                         <div key={'titles' + gameNumber}>
-                            <TitleBlock style={{ paddingTop: '1em' }}>
-                                <XVSX mode={mode}>{matchName}</XVSX>
-                                <Logo mode={mode}>
-                                    <img src={RCC} alt=' ' style={{scale: '450%', paddingTop:'1%'}} />
-                                </Logo>
-                                {mode === 'scores' ? (
-                                    <RESULTS mode={mode}>RESULTS</RESULTS>
-                                ) : (
-                                    <RESULTS mode={mode}>TEAMS</RESULTS>
-                                )}
-                            </TitleBlock>
+                            <TITLE>THE DRAGON II</TITLE>
+                            <XVSX mode={mode}>{matchName}</XVSX>
+                            {mode === 'scores' ? (
+                                <RESULTS mode={mode}>RESULTS</RESULTS>
+                            ) : (
+                                <RESULTS mode={mode}>TEAMS</RESULTS>
+                            )}
                         </div>
 
                         <TeamsContainer key={'leftteams' + gameNumber} position="left">
                             {mode === 'scores' && (
-                                <>
-                                    <StatsDesc>
-                                        <span style={{ marginLeft: "0.5em" }} >NUMBER</span>
-                                        <span style={{ marginLeft: "2em", textWrap: 'nowrap' }}>TEAM NAME</span>
-                                        <span style={{ marginLeft: "63em" }}>KILLS</span>
-                                        <span style={{ marginLeft: "3em" }}>SCORE</span>
-                                    </StatsDesc>
-                                </>
+                                <StatsDesc>
+                                    <span>kills</span>
+                                    <span>score</span>
+                                </StatsDesc>
                             )}
 
                             {leftTeams.map((team: TeamData, index: number) => (
@@ -481,10 +472,8 @@ const Scoreboard = ({
                         <TeamsContainer key={'rightteams' + gameNumber} position="right">
                             {mode === 'scores' && (
                                 <StatsDesc>
-                                    <span style={{ marginLeft: "0.5em" }} >NUMBER</span>
-                                    <span style={{ marginLeft: "2em", textWrap: 'nowrap' }}>TEAM NAME</span>
-                                    <span style={{ marginLeft: "63em" }}>KILLS</span>
-                                    <span style={{ marginLeft: "3em" }}>SCORE</span>
+                                    <span>kills</span>
+                                    <span>score</span>
                                 </StatsDesc>
                             )}
 
@@ -531,23 +520,15 @@ const Scoreboard = ({
                                 </TeamWrapper>
                             ))}
                         </TeamsContainer>
-                        <TitleBlock style={{ paddingBottom: '1em', bottom: "-73%", position: 'relative', minHeight: '10%', alignItems: 'center', gridTemplateColumns: '1fr 1.5fr 1fr' }}>
-                            <GROUP mode={mode}>{group}</GROUP>
-                            <Logo mode={mode}>
-                                <img src={logos} alt=' ' style={{scale: '120%'}} />
-                            </Logo>
-                            {mode === 'scores' && overallStatsData?.games?.length > 0 && gameNumber === 'OVERALL' && isLive ? (
-                                <GAMENUMBER mode={mode}>{`AFTER ${currentGame} GAMES`}</GAMENUMBER>
-                            ) : gameNumber !== 'OVERALL' ? (
-                                <GAMENUMBER mode={mode}>{`GAME ${gameNumber}`}</GAMENUMBER>
-                            ) : ''}
-                        </TitleBlock>
+                        {mode === 'scores' && overallStatsData?.games?.length > 0 && gameNumber === "OVERALL" ? (
+                            <GAMENUMBER mode={mode}>{`AFTER ${currentGame} GAMES`}</GAMENUMBER>
+                        ) : (
+                            <GAMENUMBER mode={mode}>{`GAME ${gameNumber}`}</GAMENUMBER>
+                        )}
+                        <GROUP mode={mode}>{group}</GROUP>
+                        <Logo mode={mode} />
                     </>
                 )}
-                <StyledVid loop autoPlay>
-                    <source src={backgroundVid} type="video/webm" />
-                </StyledVid>
-
                 <BG mode={mode} />
             </Container>
             {ui && matchData && overallStatsData && (

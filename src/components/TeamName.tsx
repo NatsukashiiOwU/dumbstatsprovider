@@ -4,8 +4,7 @@ import { useState } from "react";
 const StyledTeamName = styled.div`
   height: 100%;
   min-width: 2em;
-  font-family: 'Unbounded', sans-serif;
-  font-weight: 400;
+  font-family: 'Orbitron', sans-serif;
   font-size: 18px;
   color: inherit;
   display: flex;

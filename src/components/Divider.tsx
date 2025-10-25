@@ -16,7 +16,7 @@ const StyledVerticalDivider = styled.div`
   height: calc(100%);
   width: 0.1px;
   background-color: transparent;
-  border: solid 1px #FCFCFC;
+  /* border: solid 1px #FCFCFC; */
   opacity: 1;
 `;
 

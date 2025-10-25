@@ -11,13 +11,13 @@ const StyledIndex = styled.div<propsType>`
     height: 100%;
     display: flex;
     justify-content: center;
-    font-family: 'Unbounded', sans-serif;
-    font-weight: 500;
+    font-family: 'Orbitron', sans-serif;
     font-size: 18px;
     align-items: center;
-    margin-right: 0.5%;
+    /* margin-right: 0.5%; */
     /* Conditional background and text color */
-    background-color: ${(props) => (props.mode === 'teams' ? '#1A1C1F' : props.mp ? '#1A1C1F' : '#D11F2D')};
+    background-color: ${(props) => (props.mode === 'teams' ? '#1A1C1F' : props.mp ? '#1A1C1F' : '#400202')};
+    border: 2px solid #FF0000;
     color: ${(props) => (props.mode === 'teams' ? '#FFFFFF' : props.mp ? '#FFFFFF' : '#FCFCFC')};
 `;
 

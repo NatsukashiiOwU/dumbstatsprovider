@@ -6,9 +6,8 @@ const StyledScore = styled.div`
   min-width: 2em;
   height: 100%;
   color: inherit;
+  font-family: 'Orbitron', sans-serif;
   font-size: 18px;
-  font-family: 'Unbounded', sans-serif;
-  font-weight: 400;
   display: flex;
   justify-content: center;
   align-items: center;
