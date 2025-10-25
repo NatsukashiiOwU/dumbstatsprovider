@@ -445,15 +445,15 @@ const Scoreboard = ({
                                         text={gameNumber !== 'OVERALL' ? `${index + 1}` : team.overall_stats.position}
                                         mode={mode}
                                         mp={
-                                            settings.scoring.useMatchPoint &&
-                                            Number(team.overall_stats.score) >= settings.scoring.matchPointThreshold
+                                            settings?.scoring?.useMatchPoint &&
+                                            Number(team.overall_stats.score) >= settings?.scoring?.matchPointThreshold
                                         }
                                     />
                                     <Team
                                         mode={mode}
                                         mp={
-                                            settings.scoring.useMatchPoint &&
-                                            Number(team.overall_stats.score) >= settings.scoring.matchPointThreshold
+                                            settings?.scoring?.useMatchPoint &&
+                                            Number(team.overall_stats.score) >= settings?.scoring?.matchPointThreshold
                                         }
                                     >
                                         <TeamName text={team.name} />
