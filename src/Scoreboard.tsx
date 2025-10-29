@@ -332,7 +332,7 @@ const Scoreboard = ({
                     queryKey: ['overallStats', matchId],
                     queryFn: () => getOverallStats(matchId),
                     refetchIntervalInBackground: isLive,
-                    refetchInterval: isLive ? 5000 : false,
+                    refetchInterval: isLive ? 10000 : false,
                     staleTime: isLive ? 0 : 5 * 60 * 1000,
                 },
                 {
