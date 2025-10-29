@@ -22,7 +22,9 @@ export async function getMatch(matchId: string) {
  */
 
 export async function getOverallStats(matchId: string) {
-    const res = await fetch(`${API_BASE_URL}/stats/${matchId}/overall`);
+    const cacheBuster = Date.now(); // unique timestamp for cache busting
+    const url = `${API_BASE_URL}/stats/${matchId}/overall?cb=${cacheBuster}`;
+    const res = await fetch(url);
     if (!res.ok) throw new Error(`Failed to fetch overall stats: ${res.status}`);
     return res.json();
 }

@@ -90,7 +90,7 @@ function App() {
     const location = useLocation();
     const urlParams = new URLSearchParams(location.search);
     const host = urlParams.get('host') === '';
-    const organizer = urlParams.get('organizer') || '13yog';
+    const organizer = urlParams.get('organizer') || 'zipline';
 
     if (host) {
         return <Hoster organizer={organizer} />;

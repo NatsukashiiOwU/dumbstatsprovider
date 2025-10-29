@@ -47,7 +47,8 @@ const BG = styled.div<{ mode: 'scores' | 'teams' }>`
     width: 200%;
     height: 200%;
     background-clip: padding-box;
-    /* background-image: ${(props) => (props.mode === 'scores' ? `url(${backgroundVid})` : `url(${backgroundTeams})`)}; */
+    /* background-image: ${(props) =>
+        props.mode === 'scores' ? `url(${backgroundVid})` : `url(${backgroundTeams})`}; */
     opacity: 1;
     z-index: 0;
 `;
@@ -59,7 +60,7 @@ const StyledVid = styled.video`
     width: 100%;
     height: 100%;
     filter: brightness(500%) blur(5px);
-`
+`;
 
 const Noise = styled.img`
     position: absolute;
@@ -133,8 +134,8 @@ const Team = styled.div<wrapperType>`
     z-index: 2;
 
     /* Conditional background and text color */
-    background-color: ${(props) => (props.mode === 'teams' ? '#1A1C1F' : props.mp ? '#1A1C1F' : '#400202')};
-    border: 2px solid #FF0000;
+    background-color: ${(props) => (props.mode === 'teams' ? '#1A1C1F' : props.mp ? '#000000' : '#400202')};
+    border: 2px solid #ff0000;
     color: ${(props) => (props.mode === 'teams' ? '#FFFFFF' : props.mp ? '#FFFFFF' : '#FCFCFC')};
 `;
 
@@ -148,20 +149,20 @@ const TeamScore = styled.div`
     z-index: 2;
 `;
 
-const Logo = styled.div<{ mode: "scores" | "teams" }>`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-  img {
-    height: 100%;
+const Logo = styled.div<{ mode: 'scores' | 'teams' }>`
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width: 100%;
-    object-fit: contain;
-    background-color: transparent;
-    pointer-events: none;
-  }
+    height: 100%;
+    z-index: 1;
+    img {
+        height: 100%;
+        width: 100%;
+        object-fit: contain;
+        background-color: transparent;
+        pointer-events: none;
+    }
 `;
 
 const ExportButton = styled.button`
@@ -216,14 +217,14 @@ const WINNER = styled.div`
 `;
 
 const TitleBlock = styled.div`
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: minmax(0, 1fr);
-  justify-items: center;
-  align-items: center;
-  height: 120px; /* parent defines bounds for row fr sizing */
-  padding-inline: 4em;
-  overflow: hidden;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: minmax(0, 1fr);
+    justify-items: center;
+    align-items: center;
+    height: 120px; /* parent defines bounds for row fr sizing */
+    padding-inline: 4em;
+    overflow: hidden;
 `;
 
 const TITLE = styled.div`
@@ -303,7 +304,7 @@ const Scoreboard = ({
     setMatchId,
     setGameNumber,
     mode,
-    isLive
+    isLive,
 }: {
     matchId: string;
     gameNumber: string;
@@ -314,6 +315,7 @@ const Scoreboard = ({
     isLive?: boolean;
 }) => {
     const scoreBoardRef = useRef<HTMLDivElement>(null);
+
     const navigate = useNavigate();
     const location = useLocation();
     const queryClient = useQueryClient();
@@ -324,27 +326,35 @@ const Scoreboard = ({
                 {
                     queryKey: ['match', matchId],
                     queryFn: () => getMatch(matchId),
+                    staleTime: 5 * 60 * 1000, // 5 minutes
                 },
                 {
                     queryKey: ['overallStats', matchId],
                     queryFn: () => getOverallStats(matchId),
+                    refetchIntervalInBackground: isLive,
+                    refetchInterval: isLive ? 5000 : false,
+                    staleTime: isLive ? 0 : 5 * 60 * 1000,
                 },
                 {
                     queryKey: ['settings', matchId],
                     queryFn: () => getMatchSettings(matchId),
+
+                    staleTime: 5 * 60 * 1000,
                 },
                 {
                     queryKey: ['gameStats', matchId, gameNumber],
                     queryFn: () => getGameStats(matchId, gameNumber),
+                    enabled: gameNumber !== 'OVERALL',
+                    staleTime: 5 * 60 * 1000,
                 },
             ],
         },
         queryClient
     );
 
-
     const isLoading = results.some((result) => result.isLoading);
     const error = results.find((result) => result.error)?.error;
+    const previousTeamsRef = useRef<any[]>([]);
 
     useEffect(() => {
         if (error) {
@@ -374,10 +384,9 @@ const Scoreboard = ({
     }, [teams, gameNumber]);
 
     const matchName = useMemo(() => {
-
-        console.log("🚀 ~ Scoreboard ~ matchData:", matchData)
         return (
-            matchData?.eventId?.toUpperCase()
+            matchData?.eventId
+                ?.toUpperCase()
                 .replace(/RCC/g, '')
                 .replace(/LOBBY\s[a-zA-Z0-9]+/, '') || 'Match Name'
         );
@@ -403,6 +412,10 @@ const Scoreboard = ({
         setGameNumber(event.target.value);
     };
 
+    const url = new URL(window.location.href);
+    url.search = '';
+    const urlBase = url.toString();
+
     return (
         <>
             <Container mode={mode} ref={scoreBoardRef}>
@@ -417,7 +430,7 @@ const Scoreboard = ({
                             <TitleBlock style={{ paddingTop: '1em' }}>
                                 <XVSX mode={mode}>{matchName}</XVSX>
                                 <Logo mode={mode}>
-                                    <img src={RCC} alt=' ' style={{scale: '450%', paddingTop:'1%'}} />
+                                    <img src={RCC} alt=" " style={{ scale: '450%', paddingTop: '1%' }} />
                                 </Logo>
                                 {mode === 'scores' ? (
                                     <RESULTS mode={mode}>RESULTS</RESULTS>
@@ -431,16 +444,16 @@ const Scoreboard = ({
                             {mode === 'scores' && (
                                 <>
                                     <StatsDesc>
-                                        <span style={{ marginLeft: "0.5em" }} >NUMBER</span>
-                                        <span style={{ marginLeft: "2em", textWrap: 'nowrap' }}>TEAM NAME</span>
-                                        <span style={{ marginLeft: "63em" }}>KILLS</span>
-                                        <span style={{ marginLeft: "3em" }}>SCORE</span>
+                                        <span style={{ marginLeft: '0.5em' }}>NUMBER</span>
+                                        <span style={{ marginLeft: '2em', textWrap: 'nowrap' }}>TEAM NAME</span>
+                                        <span style={{ marginLeft: '63em' }}>KILLS</span>
+                                        <span style={{ marginLeft: '3em' }}>SCORE</span>
                                     </StatsDesc>
                                 </>
                             )}
 
                             {leftTeams.map((team: TeamData, index: number) => (
-                                <TeamWrapper key={team.name}>
+                                <TeamWrapper key={`${team.name}-${index}-${gameNumber}`}>
                                     <Index
                                         text={gameNumber !== 'OVERALL' ? `${index + 1}` : team.overall_stats.position}
                                         mode={mode}
@@ -481,15 +494,15 @@ const Scoreboard = ({
                         <TeamsContainer key={'rightteams' + gameNumber} position="right">
                             {mode === 'scores' && (
                                 <StatsDesc>
-                                    <span style={{ marginLeft: "0.5em" }} >NUMBER</span>
-                                    <span style={{ marginLeft: "2em", textWrap: 'nowrap' }}>TEAM NAME</span>
-                                    <span style={{ marginLeft: "63em" }}>KILLS</span>
-                                    <span style={{ marginLeft: "3em" }}>SCORE</span>
+                                    <span style={{ marginLeft: '0.5em' }}>NUMBER</span>
+                                    <span style={{ marginLeft: '2em', textWrap: 'nowrap' }}>TEAM NAME</span>
+                                    <span style={{ marginLeft: '63em' }}>KILLS</span>
+                                    <span style={{ marginLeft: '3em' }}>SCORE</span>
                                 </StatsDesc>
                             )}
 
                             {rightTeams.map((team: TeamData, index: number) => (
-                                <TeamWrapper key={team.name}>
+                                <TeamWrapper key={`${team.name}-${index}-${gameNumber}`}>
                                     <Index
                                         text={gameNumber !== 'OVERALL' ? `${index + 1}` : team.overall_stats.position}
                                         mode={mode}
@@ -527,16 +540,30 @@ const Scoreboard = ({
                                 </TeamWrapper>
                             ))}
                         </TeamsContainer>
-                        <TitleBlock style={{ paddingBottom: '1em', bottom: "-73%", position: 'relative', minHeight: '10%', alignItems: 'center', gridTemplateColumns: '1fr 1.5fr 1fr' }}>
+                        <TitleBlock
+                            style={{
+                                paddingBottom: '1em',
+                                bottom: '-73%',
+                                position: 'relative',
+                                minHeight: '10%',
+                                alignItems: 'center',
+                                gridTemplateColumns: '1fr 1.5fr 1fr',
+                            }}
+                        >
                             <GROUP mode={mode}>{group}</GROUP>
                             <Logo mode={mode}>
-                                <img src={logos} alt=' ' style={{scale: '120%'}} />
+                                <img src={logos} alt=" " style={{ scale: '120%' }} />
                             </Logo>
-                            {mode === 'scores' && overallStatsData?.games?.length > 0 && gameNumber === 'OVERALL' && isLive ? (
+                            {mode === 'scores' &&
+                            overallStatsData?.games?.length > 0 &&
+                            gameNumber === 'OVERALL' &&
+                            isLive ? (
                                 <GAMENUMBER mode={mode}>{`AFTER ${currentGame} GAMES`}</GAMENUMBER>
                             ) : gameNumber !== 'OVERALL' ? (
                                 <GAMENUMBER mode={mode}>{`GAME ${gameNumber}`}</GAMENUMBER>
-                            ) : ''}
+                            ) : (
+                                ''
+                            )}
                         </TitleBlock>
                     </>
                 )}
@@ -557,7 +584,15 @@ const Scoreboard = ({
                         ))}
                     </StyledSelect>
                     <ExportButton onClick={() => downloadImage(scoreBoardRef, matchData?.eventId, gameNumber)}>
-                        Export
+                        Export screenshot
+                    </ExportButton>
+                    <ExportButton
+                        style={{ borderLeft: '1px solid', flex: '1 1 800px' }}
+                        onClick={() => {
+                            navigator.clipboard.writeText(`${urlBase}?match=${matchId}&ui&live`);
+                        }}
+                    >
+                        Copy liveData link to clipboard
                     </ExportButton>
                 </div>
             )}

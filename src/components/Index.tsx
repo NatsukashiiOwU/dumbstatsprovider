@@ -16,7 +16,7 @@ const StyledIndex = styled.div<propsType>`
     align-items: center;
     /* margin-right: 0.5%; */
     /* Conditional background and text color */
-    background-color: ${(props) => (props.mode === 'teams' ? '#1A1C1F' : props.mp ? '#1A1C1F' : '#400202')};
+    background-color: ${(props) => (props.mode === 'teams' ? '#1A1C1F' : props.mp ? '#000000' : '#400202')};
     border: 2px solid #FF0000;
     color: ${(props) => (props.mode === 'teams' ? '#FFFFFF' : props.mp ? '#FFFFFF' : '#FCFCFC')};
 `;
